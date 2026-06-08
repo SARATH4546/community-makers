@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Makers' Market — Empowering Local Entrepreneurs</title>
+  <meta name="description" content="A bilingual (English & Telugu) platform empowering homemakers, students and artisans to turn their skills into thriving businesses. Explore ideas, learn, and sell locally-made products." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── HOME-SPECIFIC ─ */
+    .hero-content { position: relative; z-index: 2; padding: 100px 0 80px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(249,168,37,0.12); border: 1px solid rgba(249,168,37,0.3);
+      border-radius: var(--radius-full); padding: 6px 16px;
+      font-size: 0.8rem; font-weight: 600; color: var(--gold);
+      margin-bottom: 24px; animation: fadeDown 0.6s ease;
+    }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+    .hero-title { font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 900; line-height: 1.08; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; }
+    .hero-desc { font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; line-height: 1.75; margin-bottom: 40px; animation: fadeUp 0.7s 0.2s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.7s 0.3s ease both; }
+    .hero-trust { display: flex; align-items: center; gap: 12px; margin-top: 48px; animation: fadeUp 0.7s 0.4s ease both; }
+    .trust-avatars { display: flex; }
+    .trust-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--grad-purple); border: 2px solid var(--bg-primary); display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; margin-left: -8px; }
+    .trust-avatar:first-child { margin-left: 0; }
+    .trust-text { font-size: 0.85rem; color: var(--text-secondary); }
+    .trust-text strong { color: var(--text-primary); }
+
+    /* Feature nav cards */
+    .feature-nav { background: var(--bg-secondary); padding: 48px 0; }
+    .feature-nav-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    .fnav-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px 16px; text-align: center;
+      transition: var(--transition); text-decoration: none; display: block;
+    }
+    .fnav-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); transform: translateY(-4px); }
+    .fnav-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .fnav-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+
+    /* Featured ideas */
+    .idea-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .idea-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+    /* Story card */
+    .story-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px; transition: var(--transition);
+    }
+    .story-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); border-color: var(--border-hover); }
+    .story-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--grad-purple); display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 16px; }
+    .story-income { font-size: 1.3rem; font-weight: 800; color: var(--teal); font-family: var(--font-heading); }
+    .story-quote { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin: 12px 0; font-style: italic; }
+
+    /* CTA section */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(249,168,37,0.08) 0%, rgba(0,191,165,0.08) 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center; padding: 80px 0;
+    }
+
+    @media (max-width: 1024px) { .feature-nav-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px)  { .feature-nav-grid { grid-template-columns: repeat(2, 1fr); } .hero-content { padding: 60px 0 40px; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🛍️</div>
+      <div>
+        <span class="nav-logo-text">Community Makers'</span>
+        <span class="nav-logo-sub">Market</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active" data-i18n="nav.home">Home</a>
+      <a href="pages/ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="pages/learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="pages/marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="pages/stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="pages/schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="pages/community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="pages/marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu">
+  <a href="index.html" data-i18n="mnav.home">🏠 Home</a>
+  <a href="pages/ideas.html" data-i18n="mnav.ideas">💡 Business Ideas</a>
+  <a href="pages/learn.html" data-i18n="mnav.learn">📚 Learn</a>
+  <a href="pages/marketplace.html" data-i18n="mnav.market">🛒 Marketplace</a>
+  <a href="pages/stories.html" data-i18n="mnav.stories">⭐ Stories</a>
+  <a href="pages/schemes.html" data-i18n="mnav.schemes">🏛️ Schemes</a>
+  <a href="pages/community.html" data-i18n="mnav.community">👥 Community</a>
+  <a href="pages/dashboard.html" data-i18n="mnav.dashboard">📊 Dashboard</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="home.hero.badge">✨ Bilingual Platform — English & Telugu</div>
+      <h1 class="hero-title">
+        <span data-i18n="home.hero.title1">Turn Your Skills Into</span><br>
+        <span class="text-gradient-gold" data-i18n="home.hero.title2">A Thriving Business</span>
+      </h1>
+      <p class="hero-desc" data-i18n="home.hero.desc">
+        Join thousands of homemakers, students, and artisans who are building successful businesses — right from home. Discover ideas, learn skills, and sell directly to customers.
+      </p>
+      <div class="hero-actions">
+        <a href="pages/ideas.html" class="btn btn-primary btn-xl" data-i18n="btn.explore.ideas">💡 Explore Ideas</a>
+        <a href="pages/marketplace.html" class="btn btn-secondary btn-xl" data-i18n="btn.shop.products">🛒 Shop Products</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <div class="trust-avatar">P</div>
+          <div class="trust-avatar" style="background:var(--grad-teal)">R</div>
+          <div class="trust-avatar" style="background:var(--grad-rose)">A</div>
+          <div class="trust-avatar" style="background:var(--grad-green)">S</div>
+          <div class="trust-avatar" style="background:var(--grad-gold);color:#000">M</div>
+        </div>
+        <p class="trust-text"><strong data-i18n="home.trust.count">5,000+ entrepreneurs</strong> <span data-i18n="home.trust.label">already growing with us</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-value" data-count="5000" data-suffix="+">0</span>
+        <span class="stat-label" data-i18n="home.stats.users">Active Entrepreneurs</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-count="1200" data-suffix="+">0</span>
+        <span class="stat-label" data-i18n="home.stats.products">Products Listed</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-count="28" data-suffix="">0</span>
+        <span class="stat-label" data-i18n="home.stats.categories">Business Categories</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-count="6" data-suffix="">0</span>
+        <span class="stat-label" data-i18n="home.stats.schemes">Govt. Support Programs</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE NAV -->
+<div class="feature-nav">
+  <div class="container">
+    <div class="feature-nav-grid">
+      <a href="pages/ideas.html" class="fnav-card">
+        <span class="fnav-icon">💡</span>
+        <div class="fnav-label" data-i18n="home.fnav.ideas">Business Ideas</div>
+      </a>
+      <a href="pages/learn.html" class="fnav-card">
+        <span class="fnav-icon">📚</span>
+        <div class="fnav-label" data-i18n="home.fnav.learn">Learn & Grow</div>
+      </a>
+      <a href="pages/marketplace.html" class="fnav-card">
+        <span class="fnav-icon">🛒</span>
+        <div class="fnav-label" data-i18n="home.fnav.market">Marketplace</div>
+      </a>
+      <a href="pages/stories.html" class="fnav-card">
+        <span class="fnav-icon">⭐</span>
+        <div class="fnav-label" data-i18n="home.fnav.stories">Success Stories</div>
+      </a>
+      <a href="pages/schemes.html" class="fnav-card">
+        <span class="fnav-icon">🏛️</span>
+        <div class="fnav-label" data-i18n="home.fnav.schemes">Govt. Schemes</div>
+      </a>
+      <a href="pages/community.html" class="fnav-card">
+        <span class="fnav-icon">👥</span>
+        <div class="fnav-label" data-i18n="home.fnav.community">Community</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED IDEAS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow" data-i18n="home.ideas.eyebrow">Business Ideas Hub</div>
+      <h2 class="section-title"><span data-i18n="home.ideas.title1">Find Your Perfect</span> <span class="text-gradient-gold" data-i18n="home.ideas.title2">Business Idea</span></h2>
+      <p class="section-desc" data-i18n="home.ideas.desc">From cooking and crafts to digital services — explore 28+ home-based business opportunities curated for local entrepreneurs.</p>
+    </div>
+    <div class="grid-4" id="featured-ideas">
+      <!-- Rendered by JS -->
+    </div>
+    <div style="text-align:center; margin-top:40px;" class="reveal">
+      <a href="pages/ideas.html" class="btn btn-secondary btn-lg" data-i18n="btn.view.ideas">View All 28 Ideas →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section" style="background:var(--bg-secondary);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow" data-i18n="home.market.eyebrow">Digital Marketplace</div>
+      <h2 class="section-title" data-i18n="home.market.title">Shop Locally-Made Products</h2>
+      <p class="section-desc" data-i18n="home.market.desc">Discover authentic handmade products from talented artisans in your community. Buy directly via WhatsApp.</p>
+    </div>
+    <div class="grid-4" id="featured-products">
+      <!-- Rendered by JS -->
+    </div>
+    <div style="text-align:center; margin-top:40px;" class="reveal">
+      <a href="pages/marketplace.html" class="btn btn-primary btn-lg" data-i18n="btn.browse.all">Browse All Products →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SUCCESS STORIES -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow" data-i18n="home.stories.eyebrow">Success Stories</div>
+      <h2 class="section-title" data-i18n="home.stories.title">Real People, Real Results</h2>
+      <p class="section-desc" data-i18n="home.stories.desc">Get inspired by entrepreneurs from your community who turned their skills into substantial income.</p>
+    </div>
+    <div class="grid-4" id="featured-stories">
+      <!-- Rendered by JS -->
+    </div>
+    <div style="text-align:center; margin-top:40px;" class="reveal">
+      <a href="pages/stories.html" class="btn btn-secondary btn-lg" data-i18n="btn.read.stories">Read All Stories →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow" style="justify-content:center;" data-i18n="home.cta.eyebrow">Ready to Begin?</div>
+      <h2 class="section-title" style="margin-bottom:16px;"><span data-i18n="home.cta.title1">Your Business Journey Starts</span><br><span class="text-gradient-gold" data-i18n="home.cta.title2">Right Now</span></h2>
+      <p class="section-desc" style="margin-bottom:40px;" data-i18n="home.cta.desc">Free to join. No investment needed to start learning. Start your first business this week.</p>
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="pages/ideas.html" class="btn btn-primary btn-xl" data-i18n="btn.start.free">🚀 Start for Free</a>
+        <a href="pages/schemes.html" class="btn btn-secondary btn-xl" data-i18n="btn.govt.support">🏛️ View Govt. Support</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-logo" style="margin-bottom:0">
+          <div class="nav-logo-icon">🛍️</div>
+          <div>
+            <span class="nav-logo-text">Community Makers' Market</span>
+          </div>
+        </a>
+        <p class="footer-brand-desc" data-i18n="footer.brand.desc">Empowering local entrepreneurs with knowledge, community, and direct market access. Bilingual — English & Telugu.</p>
+        <div style="display:flex; gap:12px;">
+          <a href="#" class="btn btn-ghost btn-sm">📘 Facebook</a>
+          <a href="#" class="btn btn-ghost btn-sm">📸 Instagram</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" data-i18n="footer.platform">Platform</div>
+        <div class="footer-links">
+          <a href="pages/ideas.html" data-i18n="nav.ideas">Business Ideas</a>
+          <a href="pages/learn.html" data-i18n="nav.learn">Learning Hub</a>
+          <a href="pages/marketplace.html" data-i18n="nav.market">Marketplace</a>
+          <a href="pages/dashboard.html" data-i18n="nav.dashboard">Dashboard</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" data-i18n="footer.support">Support</div>
+        <div class="footer-links">
+          <a href="pages/stories.html" data-i18n="nav.stories">Success Stories</a>
+          <a href="pages/schemes.html" data-i18n="nav.schemes">Govt. Schemes</a>
+          <a href="pages/community.html" data-i18n="nav.community">Community Forum</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" data-i18n="footer.connect">Connect</div>
+        <div class="footer-links">
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.copy">© 2026 Community Makers' Market. Made with ❤️ for local entrepreneurs.</span>
+      <span data-i18n="footer.lang">English | తెలుగు</span>
+    </div>
+  </div>
+</footer>
+
+<!-- WA FLOAT -->
+<a href="https://wa.me/919000000000?text=Hello%20Community%20Makers%20Market!%20I%20need%20help." target="_blank" class="wa-float" title="Chat with us on WhatsApp">💬</a>
+
+<script src="js/translations.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+const diffBadgeClass = { beginner: 'badge-green', intermediate: 'badge-gold', advanced: 'badge-rose' };
+const storyGrads = ['var(--grad-gold)','var(--grad-teal)','var(--grad-purple)','var(--grad-rose)'];
+
+function renderHomeIdeas() {
+  const c = document.getElementById('featured-ideas'); c.innerHTML = '';
+  CMM_DATA.businessIdeas.slice(0,4).forEach((idea,i) => {
+    const diffLabel = CMM.t('badge.'+idea.difficulty) || idea.difficulty;
+    c.innerHTML += `
+      <a href="pages/ideas.html" class="idea-card reveal reveal-delay-${i+1}" style="text-decoration:none;">
+        <div class="idea-icon">${idea.icon}</div>
+        <div class="idea-title">${idea.title}</div>
+        <div class="idea-desc">${idea.desc}</div>
+        <div class="idea-meta">
+          <span class="badge ${diffBadgeClass[idea.difficulty]}">${diffLabel}</span>
+          <span class="badge badge-muted">${idea.investment}</span>
+          <span class="badge badge-teal">📈 ${idea.profit}</span>
+        </div>
+      </a>`;
+  });
+}
+
+function renderHomeProducts() {
+  const c = document.getElementById('featured-products'); c.innerHTML = '';
+  CMM_DATA.products.slice(0,4).forEach((p,i) => {
+    const disc = Math.round((1-p.price/p.originalPrice)*100);
+    const stars = '★'.repeat(Math.floor(p.rating))+(p.rating%1>=0.5?'½':'');
+    const inStock = CMM.t('badge.in.stock');
+    const buyBtn = CMM.t('btn.buy.whatsapp');
+    const offLabel = CMM.t('market.off') || 'off';
+    c.innerHTML += `
+      <div class="product-card reveal reveal-delay-${i+1}">
+        <div class="product-image">
+          <span>${p.emoji}</span>
+          <span class="product-badge badge badge-green">${inStock}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-name">${p.name}</div>
+          <div class="product-seller">🏪 ${p.seller} · ${p.location}</div>
+          <div class="product-rating"><span class="stars">${stars}</span>${p.rating} (${p.reviews})</div>
+          <div class="product-price-row">
+            <span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>
+            <span class="price-original">₹${p.originalPrice.toLocaleString('en-IN')}</span>
+            <span class="price-discount">${disc}% ${offLabel}</span>
+          </div>
+          <button class="btn btn-whatsapp" style="width:100%" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price})">
+            ${buyBtn}
+          </button>
+        </div>
+      </div>`;
+  });
+}
+
+function renderHomeStories() {
+  const c = document.getElementById('featured-stories'); c.innerHTML = '';
+  const readStory = CMM.t('btn.read.full') || 'Read Story →';
+  CMM_DATA.stories.forEach((s,i) => {
+    c.innerHTML += `
+      <div class="story-card reveal reveal-delay-${i+1}">
+        <div class="story-avatar" style="background:${storyGrads[i]}">${s.emoji}</div>
+        <div class="badge badge-teal" style="margin-bottom:12px">${s.tag}</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:4px">${s.name}</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px">📍 ${s.location} · ${s.business}</div>
+        <div class="story-income">${s.income}</div>
+        <p class="story-quote">"${s.quote}"</p>
+        <a href="pages/stories.html" class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px">${readStory}</a>
+      </div>`;
+  });
+}
+
+function renderAll() {
+  renderHomeIdeas(); renderHomeProducts(); renderHomeStories();
+  CMM.observeNewRevealElements();
+}
+
+window.CMM_RERENDER = function(lang) { renderAll(); };
+renderAll();
+</script>
+</body>
+</html>

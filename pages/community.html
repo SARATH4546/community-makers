@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Forum — Community Makers' Market</title>
+  <meta name="description" content="Connect with fellow entrepreneurs. Ask questions, share tips, find mentors, and join local networking events." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 60px; text-align: center; background: linear-gradient(180deg, rgba(0,191,165,0.06) 0%, transparent 100%); }
+    .community-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; }
+    .sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: sticky; top: calc(var(--nav-height) + 20px); }
+    .cat-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border-radius: var(--radius-md); font-size: 0.87rem; font-weight: 500;
+      cursor: pointer; border: 1px solid transparent; transition: var(--transition-fast);
+      width: 100%; background: none; color: var(--text-secondary); text-align: left;
+    }
+    .cat-btn:hover, .cat-btn.active { background: rgba(0,191,165,0.08); border-color: rgba(0,191,165,0.25); color: var(--teal); }
+    .post-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px 24px; transition: var(--transition); cursor: pointer;
+    }
+    .post-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); transform: translateY(-2px); }
+    .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .post-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--grad-purple); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+    .post-author { font-weight: 600; font-size: 0.88rem; }
+    .post-time { font-size: 0.78rem; color: var(--text-muted); }
+    .post-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
+    .post-footer { display: flex; align-items: center; gap: 16px; }
+    .post-stat { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--text-muted); }
+    .post-tag-badge { padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 700; }
+    .tag-question { background: rgba(249,168,37,0.1); color: var(--gold); }
+    .tag-success  { background: rgba(0,200,83,0.1); color: #69F0AE; }
+    .tag-discussion { background: rgba(92,107,192,0.1); color: #9FA8DA; }
+    .tag-tip      { background: rgba(0,191,165,0.1); color: var(--teal); }
+    .tag-guide    { background: rgba(156,39,176,0.1); color: #CE93D8; }
+    .ask-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px; margin-bottom: 28px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .ask-input {
+      flex: 1; background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: var(--radius-full); padding: 10px 18px;
+      color: var(--text-primary); font-size: 0.9rem; outline: none;
+    }
+    .ask-input::placeholder { color: var(--text-muted); }
+    .ask-input:focus { border-color: var(--teal); }
+    .event-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px;
+    }
+    .event-date { font-size: 0.75rem; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+    .event-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .event-type { font-size: 0.75rem; color: var(--text-muted); }
+    .mentor-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px;
+      align-items: center; margin-bottom: 12px; transition: var(--transition-fast);
+    }
+    .mentor-card:hover { border-color: rgba(37,211,102,0.3); }
+    .mentor-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--grad-teal); display: grid; place-items: center; font-size: 1.2rem; flex-shrink: 0; }
+    .avatar-colors { background: var(--grad-gold); }
+    .avatar-colors-2 { background: var(--grad-rose); }
+    .avatar-colors-3 { background: var(--grad-purple); }
+    @media(max-width:1024px) { .community-layout { grid-template-columns: 1fr; } .sidebar { position: static; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="community.html" class="nav-link active">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="learn.html">📚 Learn</a>
+  <a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a><a href="schemes.html">🏛️ Schemes</a><a href="community.html">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="community.eyebrow">Community Forum</div>
+    <h1 class="section-title"><span data-i18n="community.title1">Connect, Learn &amp;</span> <span class="text-gradient-teal" data-i18n="community.title2">Grow Together</span></h1>
+    <p class="section-desc" data-i18n="community.desc">Ask questions, share wins, find mentors and join events. Over 5,000 entrepreneurs helping each other succeed.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="community-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div style="margin-bottom:24px">
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:12px" data-i18n="community.cat.label">Categories</div>
+          <div id="cat-btns" style="display:flex; flex-direction:column; gap:6px">
+            <button class="cat-btn active" data-cat="all" data-i18n="community.cat.all">💬 All Discussions</button>
+            <button class="cat-btn" data-cat="marketing" data-i18n="community.cat.marketing">📢 Marketing &amp; Sales</button>
+            <button class="cat-btn" data-cat="finance" data-i18n="community.cat.finance">💰 Finance & Loans</button>
+            <button class="cat-btn" data-cat="operations" data-i18n="community.cat.ops">🔧 Operations</button>
+            <button class="cat-btn" data-cat="legal" data-i18n="community.cat.legal">⚖️ Legal & Registration</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:24px; padding-top:24px; border-top:1px solid var(--border)">
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:12px" data-i18n="community.events">Upcoming Events</div>
+          <div id="events-list"></div>
+        </div>
+
+        <div style="padding-top:24px; border-top:1px solid var(--border)">
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:12px" data-i18n="community.mentors">Available Mentors</div>
+          <div id="mentors-list"></div>
+        </div>
+      </aside>
+
+      <!-- Main Feed -->
+      <div>
+        <!-- Ask a question -->
+        <div class="ask-box reveal">
+          <div class="post-avatar" style="background:var(--grad-gold); color:#000">👤</div>
+          <input class="ask-input" data-i18n-placeholder="community.ask.placeholder" placeholder="Ask a question or share a tip with the community..." readonly onclick="CMM.showToast('Join the community to post! Share via WhatsApp 👇', '💬')" />
+          <a href="https://wa.me/919000000000?text=Hi!%20I%20want%20to%20join%20the%20Community%20Makers%20Market%20WhatsApp%20group." target="_blank" class="btn btn-whatsapp btn-sm" data-i18n="btn.post">💬 Post</a>
+        </div>
+
+        <!-- Posts -->
+        <div id="posts-container" style="display:flex; flex-direction:column; gap:14px"></div>
+
+        <!-- Load more -->
+        <div style="text-align:center; margin-top:28px">
+          <button class="btn btn-secondary btn-lg" data-i18n="btn.load.more" onclick="CMM.showToast('Loading more discussions...', '💬')">Load More Discussions</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)" data-i18n="footer.back">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script><script src="../js/data.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let activePostCat = 'all';
+const avatarColors = ['var(--grad-gold)','var(--grad-teal)','var(--grad-purple)','var(--grad-rose)','var(--grad-green)'];
+const tagClass = { question:'tag-question', success:'tag-success', discussion:'tag-discussion', tip:'tag-tip', guide:'tag-guide' };
+
+function renderPosts() {
+  const container = document.getElementById('posts-container');
+  const posts = CMM_DATA.communityPosts.filter(p => activePostCat === 'all' || p.category === activePostCat);
+  container.innerHTML = '';
+  posts.forEach((p, i) => {
+    const aci = i % avatarColors.length;
+    container.innerHTML += `
+      <div class="post-card reveal" onclick="CMM.showToast('Opening discussion thread...', '💬')">
+        <div class="post-header">
+          <div class="post-avatar" style="background:${avatarColors[aci]};color:#000">${p.avatar}</div>
+          <div>
+            <div class="post-author">${p.author}</div>
+            <div class="post-time">${p.time}</div>
+          </div>
+          <div class="post-tag-badge tag-${p.tag}" style="margin-left:auto">${p.tag}</div>
+        </div>
+        <div class="post-title">${p.title}</div>
+        <div class="post-footer">
+          <span class="post-stat">💬 ${p.replies} ${CMM.t('community.replies')}</span>
+          <span class="post-stat">❤️ ${p.likes} ${CMM.t('community.likes')}</span>
+          <span class="post-stat badge badge-muted" style="margin-left:auto">${p.category}</span>
+        </div>
+      </div>`;
+  });
+  CMM.observeNewRevealElements();
+}
+
+// Category filter
+document.getElementById('cat-btns').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-btn');
+  if (!btn) return;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activePostCat = btn.dataset.cat;
+  renderPosts();
+});
+
+function renderEvents() {
+  const eventsList = document.getElementById('events-list');
+  eventsList.innerHTML = '';
+  const onlineLabel = CMM.t('community.online');
+  const offlineLabel = CMM.t('community.offline');
+  const goingLabel = CMM.t('community.going');
+  const rsvpLabel = CMM.t('btn.rsvp');
+  CMM_DATA.events.forEach(ev => {
+    eventsList.innerHTML += `
+      <div class="event-card">
+        <div class="event-date">📅 ${ev.date} · ${ev.time}</div>
+        <div class="event-title">${ev.title}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+          <div class="event-type">${ev.type === 'online' ? onlineLabel : offlineLabel} · ${ev.attendees} ${goingLabel}</div>
+          <button class="btn btn-ghost" style="padding:4px 10px; font-size:0.72rem" onclick="CMM.showToast('Registered for event!', '🎉')">${rsvpLabel}</button>
+        </div>
+      </div>`;
+  });
+}
+
+function renderMentors() {
+  const mentors = [
+    { name: 'Ravi Shankar', icon: '👨‍💼', specialty: 'Marketing & Social Media', exp: '8 yrs', color: 'var(--grad-teal)' },
+    { name: 'Deepa Rao', icon: '👩‍💼', specialty: 'Finance & Govt. Schemes', exp: '12 yrs', color: 'var(--grad-gold)' },
+    { name: 'Kiran Kumar', icon: '👨‍🏫', specialty: 'E-commerce & Branding', exp: '6 yrs', color: 'var(--grad-purple)' },
+  ];
+  const mentorsList = document.getElementById('mentors-list');
+  mentorsList.innerHTML = '';
+  mentors.forEach(m => {
+    mentorsList.innerHTML += `
+      <div class="mentor-card">
+        <div class="mentor-avatar" style="background:${m.color}">${m.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700; font-size:0.88rem">${m.name}</div>
+          <div style="font-size:0.75rem; color:var(--text-secondary)">${m.specialty}</div>
+        </div>
+        <a href="https://wa.me/919000000000?text=Hi!%20I%20want%20to%20connect%20with%20mentor%20${encodeURIComponent(m.name)}." target="_blank" class="btn btn-whatsapp" style="padding:6px 10px; font-size:0.72rem">💬</a>
+      </div>`;
+  });
+}
+
+window.CMM_RERENDER = function(lang) {
+  renderPosts();
+  renderEvents();
+  renderMentors();
+};
+
+renderPosts();
+renderEvents();
+renderMentors();
+</script>
+</body>
+</html>

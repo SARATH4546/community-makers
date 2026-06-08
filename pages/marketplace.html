@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace — Community Makers' Market</title>
+  <meta name="description" content="Shop authentic handmade products from local artisans. Contact sellers directly via WhatsApp for a personal buying experience." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 40px; background: linear-gradient(180deg, rgba(0,191,165,0.06) 0%, transparent 100%); }
+    .marketplace-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
+    .sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; position: sticky; top: calc(var(--nav-height) + 20px); }
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+    .sidebar-filters { display: flex; flex-direction: column; gap: 8px; }
+    .sf-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition-fast); text-align: left; }
+    .sf-btn:hover, .sf-btn.active { background: rgba(0,191,165,0.1); border-color: rgba(0,191,165,0.4); color: var(--teal); }
+    .price-range { display: flex; flex-direction: column; gap: 8px; }
+    .price-range input[type=range] { width: 100%; accent-color: var(--teal); }
+    .price-display { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-secondary); }
+    .sort-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .sort-bar select { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-primary); font-size: 0.85rem; outline: none; cursor: pointer; }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .whatsapp-cta-box {
+      background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(18,140,126,0.1));
+      border: 1px solid rgba(37,211,102,0.25);
+      border-radius: var(--radius-lg); padding: 20px; margin-bottom: 32px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .whatsapp-cta-box .wa-icon { font-size: 2.5rem; }
+    .product-detail-modal .modal { max-width: 680px; }
+    .pd-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .pd-image { background: linear-gradient(135deg, rgba(0,191,165,0.08), rgba(249,168,37,0.08)); border-radius: var(--radius-lg); height: 220px; display: grid; place-items: center; font-size: 6rem; }
+
+    @media (max-width: 1024px) {
+      .marketplace-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } .pd-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link active" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html" data-i18n="mnav.home">🏠 Home</a>
+  <a href="ideas.html" data-i18n="mnav.ideas">💡 Business Ideas</a>
+  <a href="learn.html" data-i18n="mnav.learn">📚 Learn</a>
+  <a href="marketplace.html" data-i18n="mnav.market">🛒 Marketplace</a>
+  <a href="stories.html" data-i18n="mnav.stories">⭐ Stories</a>
+  <a href="schemes.html" data-i18n="mnav.schemes">🏛️ Schemes</a>
+  <a href="community.html" data-i18n="mnav.community">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="market.eyebrow">Digital Marketplace</div>
+    <h1 class="section-title"><span data-i18n="market.title">Shop Locally-Made Products</span></h1>
+    <p class="section-desc" data-i18n="market.desc">Authentic handmade products from talented artisans. Connect directly with sellers via WhatsApp.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+
+    <!-- WhatsApp CTA Banner -->
+    <div class="whatsapp-cta-box reveal">
+      <div class="wa-icon">💬</div>
+      <div>
+        <div style="font-weight:700; font-size:1rem; margin-bottom:4px" data-i18n="market.wa.title">Buy Directly via WhatsApp</div>
+        <div style="font-size:0.87rem; color:var(--text-secondary)" data-i18n="market.wa.desc">No payment gateway needed. Click "Buy via WhatsApp" on any product to chat directly with the seller and negotiate terms, delivery, and payment.</div>
+      </div>
+      <span class="badge badge-whatsapp" style="flex-shrink:0; font-size:0.75rem" data-i18n="market.wa.badge">Secure &amp; Personal</span>
+    </div>
+
+    <div class="marketplace-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-i18n="market.label.category">Category</div>
+          <div class="sidebar-filters" id="cat-filters">
+            <button class="sf-btn active" data-cat="all" data-i18n="market.cat.all">🛍️ All Products</button>
+            <button class="sf-btn" data-cat="food" data-i18n="market.cat.food">🍲 Food & Pickles</button>
+            <button class="sf-btn" data-cat="jewelry" data-i18n="market.cat.jewelry">💍 Jewellery</button>
+            <button class="sf-btn" data-cat="home-decor" data-i18n="market.cat.decor">🏠 Home Décor</button>
+            <button class="sf-btn" data-cat="fashion" data-i18n="market.cat.fashion">👗 Fashion</button>
+            <button class="sf-btn" data-cat="beauty" data-i18n="market.cat.beauty">🌿 Beauty & Wellness</button>
+            <button class="sf-btn" data-cat="art" data-i18n="market.cat.art">🖼️ Art</button>
+            <button class="sf-btn" data-cat="gifting" data-i18n="market.cat.gift">🎁 Gifting</button>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-i18n="market.label.price">Price Range</div>
+          <div class="price-range">
+            <input type="range" id="price-range" min="0" max="5000" value="5000" step="100" oninput="updatePrice(this.value)">
+            <div class="price-display"><span>₹0</span><span id="price-label">₹5,000</span></div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-i18n="market.label.sort">Sort By</div>
+          <div class="sidebar-filters" id="sort-filters">
+            <button class="sf-btn active" data-sort="default" data-i18n="market.sort.featured">⭐ Featured</button>
+            <button class="sf-btn" data-sort="price-asc" data-i18n="market.sort.low">💰 Price: Low to High</button>
+            <button class="sf-btn" data-sort="price-desc" data-i18n="market.sort.high">💎 Price: High to Low</button>
+            <button class="sf-btn" data-sort="rating" data-i18n="market.sort.rating">⭐ Top Rated</button>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-i18n="market.label.location">Seller Location</div>
+          <div class="sidebar-filters" id="loc-filters">
+            <button class="sf-btn active" data-loc="all" data-i18n="market.loc.all">📍 All Locations</button>
+            <button class="sf-btn" data-loc="Hyderabad">Hyderabad</button>
+            <button class="sf-btn" data-loc="Vijayawada">Vijayawada</button>
+            <button class="sf-btn" data-loc="Vizag">Vizag</button>
+            <button class="sf-btn" data-loc="Warangal">Warangal</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products -->
+      <div>
+        <div class="sort-bar">
+          <span id="product-count" style="color:var(--text-secondary); font-size:0.9rem"></span>
+          <div style="display:flex; gap:8px; align-items:center">
+            <span style="font-size:0.85rem; color:var(--text-muted)" data-i18n="market.sell.label">Want to sell?</span>
+            <a href="dashboard.html" class="btn btn-ghost btn-sm" data-i18n="market.sell.btn">List Your Product →</a>
+          </div>
+        </div>
+        <div class="products-grid" id="products-grid"></div>
+        <div id="no-products" style="display:none; text-align:center; padding:60px; color:var(--text-secondary)">
+          <div style="font-size:3rem">📦</div>
+          <p style="margin-top:12px">No products found with these filters.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay product-detail-modal" id="product-modal">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-close">✕</button>
+    <div id="product-modal-content"></div>
+  </div>
+</div>
+
+<!-- SELLER PROFILE MODAL -->
+<div class="modal-overlay" id="seller-modal">
+  <div class="modal">
+    <button class="modal-close">✕</button>
+    <div id="seller-modal-content"></div>
+  </div>
+</div>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)" data-i18n="footer.back">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let filterCat = 'all', filterLoc = 'all', filterSort = 'default', maxPrice = 5000;
+
+function getStars(r) {
+  const full = Math.floor(r);
+  return '★'.repeat(full) + (r - full >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(r));
+}
+
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  const noP  = document.getElementById('no-products');
+  const count = document.getElementById('product-count');
+  let products = CMM_DATA.products.filter(p => {
+    const catOk = filterCat === 'all' || p.category === filterCat;
+    const locOk = filterLoc === 'all' || p.location === filterLoc;
+    const priceOk = p.price <= maxPrice;
+    return catOk && locOk && priceOk;
+  });
+  if (filterSort === 'price-asc') products.sort((a,b) => a.price - b.price);
+  else if (filterSort === 'price-desc') products.sort((a,b) => b.price - a.price);
+  else if (filterSort === 'rating') products.sort((a,b) => b.rating - a.rating);
+
+  count.textContent = `${products.length} ${CMM.t('market.reviews') === 'reviews' ? 'product' : 'ఉత్పత్తులు'}${products.length !== 1 ? 's' : ''} found`;
+  grid.innerHTML = '';
+  if (!products.length) { noP.style.display = 'block'; return; }
+  noP.style.display = 'none';
+  const inStockLabel = CMM.t('badge.in.stock');
+  const buyLabel = CMM.t('btn.buy.whatsapp');
+  const viewLabel = CMM.t('btn.view.details');
+  const offLabel = CMM.t('market.off');
+  const reviewsLabel = CMM.t('market.reviews');
+  products.forEach((p, i) => {
+    const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+    grid.innerHTML += `
+      <div class="product-card">
+        <div class="product-image" onclick="showProduct(${p.id})" style="cursor:pointer">
+          <span>${p.emoji}</span>
+          <span class="product-badge badge badge-green">${inStockLabel}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-name" onclick="showProduct(${p.id})" style="cursor:pointer">${p.name}</div>
+          <div class="product-seller" onclick="showSeller(${p.id})" style="cursor:pointer">🏪 ${p.seller} · 📍 ${p.location}</div>
+          <div class="product-rating"><span class="stars">${getStars(p.rating)}</span> ${p.rating} (${p.reviews} ${reviewsLabel})</div>
+          <div class="product-price-row">
+            <span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>
+            <span class="price-original">₹${p.originalPrice.toLocaleString('en-IN')}</span>
+            <span class="price-discount">${disc}% ${offLabel}</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="showProduct(${p.id})">${viewLabel}</button>
+            <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price})">
+              ${buyLabel}
+            </button>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function showProduct(id) {
+  const p = CMM_DATA.products.find(x => x.id === id);
+  if (!p) return;
+  const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+  document.getElementById('product-modal-content').innerHTML = `
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start">
+      <div style="background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08)); border-radius:var(--radius-lg); height:200px; display:grid; place-items:center; font-size:5.5rem;">${p.emoji}</div>
+      <div>
+        <div class="badge badge-green" style="margin-bottom:10px">✓ In Stock</div>
+        <h2 style="font-size:1.2rem; margin-bottom:6px">${p.name}</h2>
+        <div style="font-size:0.85rem; color:var(--teal); margin-bottom:12px">by ${p.seller} · 📍 ${p.location}</div>
+        <div class="product-rating" style="margin-bottom:14px"><span class="stars">${getStars(p.rating)}</span> ${p.rating} (${p.reviews} reviews)</div>
+        <div class="product-price-row" style="margin-bottom:16px">
+          <span class="price-current" style="font-size:1.5rem">₹${p.price.toLocaleString('en-IN')}</span>
+          <span class="price-original">₹${p.originalPrice.toLocaleString('en-IN')}</span>
+          <span class="price-discount">${disc}% off</span>
+        </div>
+      </div>
+    </div>
+    <p style="color:var(--text-secondary); line-height:1.7; margin:20px 0">${p.desc}</p>
+    <div style="background:rgba(37,211,102,0.06); border:1px solid rgba(37,211,102,0.2); border-radius:var(--radius-md); padding:16px; margin-bottom:20px">
+      <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px">💬 How to Buy</div>
+      <div style="font-size:0.85rem; color:var(--text-secondary)">Click the WhatsApp button below. You'll be connected directly to the seller with a pre-filled message about this product. Discuss delivery, payment, and customisation with them personally.</div>
+    </div>
+    <button class="btn btn-whatsapp btn-lg" style="width:100%" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price}); CMM.showToast('Opening WhatsApp...', '💬')">
+      💬 Contact ${p.seller} on WhatsApp
+    </button>`;
+  CMM.openModal('product-modal');
+}
+
+function showSeller(productId) {
+  const p = CMM_DATA.products.find(x => x.id === productId);
+  if (!p) return;
+  const sellerProducts = CMM_DATA.products.filter(x => x.seller === p.seller);
+  document.getElementById('seller-modal-content').innerHTML = `
+    <div style="text-align:center; margin-bottom:24px">
+      <div style="width:72px; height:72px; border-radius:50%; background:var(--grad-teal); display:inline-flex; align-items:center; justify-content:center; font-size:2rem; margin-bottom:12px">${p.emoji}</div>
+      <h2 style="font-size:1.3rem">${p.seller}</h2>
+      <div style="color:var(--text-secondary); font-size:0.88rem; margin-top:4px">📍 ${p.location} · Verified Seller</div>
+    </div>
+    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:24px">
+      <span class="badge badge-green">✓ Verified</span>
+      <span class="badge badge-teal">${sellerProducts.length} Products</span>
+    </div>
+    <h3 style="font-size:0.9rem; margin-bottom:14px; color:var(--text-secondary)">All Products by ${p.seller}</h3>
+    ${sellerProducts.map(sp => `
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg-card); border-radius:var(--radius-md); margin-bottom:10px; border:1px solid var(--border)">
+        <span style="font-size:2rem">${sp.emoji}</span>
+        <div style="flex:1">
+          <div style="font-weight:600; font-size:0.9rem">${sp.name}</div>
+          <div style="font-size:0.82rem; color:var(--teal)">₹${sp.price.toLocaleString('en-IN')}</div>
+        </div>
+        <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${sp.sellerPhone}','${sp.name}','${sp.seller}',${sp.price})">💬</button>
+      </div>`).join('')}
+    <button class="btn btn-whatsapp" style="width:100%; margin-top:16px" onclick="CMM.openWhatsApp('${p.sellerPhone}','','${p.seller}','')">
+      💬 Message ${p.seller} on WhatsApp
+    </button>`;
+  CMM.openModal('seller-modal');
+}
+
+function updatePrice(val) {
+  maxPrice = parseInt(val);
+  document.getElementById('price-label').textContent = '₹' + parseInt(val).toLocaleString('en-IN');
+  renderProducts();
+}
+
+// Sort filter listener
+document.querySelector('#sort-filters') && document.getElementById('sort-filters').addEventListener('click', e => {
+  if (!e.target.classList.contains('sf-btn')) return;
+  document.querySelectorAll('#sort-filters .sf-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filterSort = e.target.dataset.sort;
+  renderProducts();
+});
+
+document.getElementById('cat-filters').addEventListener('click', e => {
+  if (!e.target.classList.contains('sf-btn')) return;
+  document.querySelectorAll('#cat-filters .sf-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filterCat = e.target.dataset.cat;
+  renderProducts();
+});
+
+document.getElementById('loc-filters').addEventListener('click', e => {
+  if (!e.target.classList.contains('sf-btn')) return;
+  document.querySelectorAll('#loc-filters .sf-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  filterLoc = e.target.dataset.loc;
+  renderProducts();
+});
+
+window.CMM_RERENDER = function(lang) { renderProducts(); };
+renderProducts();
+</script>
+</body>
+</html>

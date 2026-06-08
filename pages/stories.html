@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Success Stories — Community Makers' Market</title>
+  <meta name="description" content="Get inspired by real entrepreneurs from local communities who turned their skills into thriving businesses." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 60px; text-align: center; background: linear-gradient(180deg, rgba(255,107,138,0.06) 0%, transparent 100%); }
+    .hero-story {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+      background: linear-gradient(135deg, rgba(249,168,37,0.06), rgba(0,191,165,0.06));
+      border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 48px;
+      margin-bottom: 60px;
+    }
+    .hero-story-image {
+      background: var(--grad-gold); border-radius: var(--radius-xl);
+      height: 300px; display: grid; place-items: center; font-size: 7rem;
+    }
+    .story-income-big { font-size: 2.5rem; font-weight: 900; font-family: var(--font-heading); color: var(--teal); }
+    .story-full-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden; transition: var(--transition); cursor: pointer;
+    }
+    .story-full-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); border-color: var(--border-hover); }
+    .story-card-img {
+      height: 140px; display: grid; place-items: center; font-size: 4.5rem;
+    }
+    .story-card-body { padding: 20px; }
+    .story-card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .story-card-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px; }
+    .story-card-income { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--teal); margin-bottom: 10px; }
+    .story-card-quote { font-size: 0.85rem; color: var(--text-secondary); font-style: italic; line-height: 1.6; margin-bottom: 14px; }
+    .detail-section { margin-bottom: 20px; }
+    .detail-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .detail-value { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+    @media(max-width:768px) { .hero-story { grid-template-columns:1fr; gap:28px; padding:28px; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link active" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html" data-i18n="mnav.home">🏠 Home</a>
+  <a href="ideas.html" data-i18n="mnav.ideas">💡 Business Ideas</a>
+  <a href="learn.html" data-i18n="mnav.learn">📚 Learn</a>
+  <a href="marketplace.html" data-i18n="mnav.market">🛒 Marketplace</a>
+  <a href="stories.html" data-i18n="mnav.stories">⭐ Stories</a>
+  <a href="schemes.html" data-i18n="mnav.schemes">🏛️ Schemes</a>
+  <a href="community.html" data-i18n="mnav.community">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="stories.eyebrow">Success Stories</div>
+    <h1 class="section-title"><span data-i18n="stories.title">Real People, Real Results</span></h1>
+    <p class="section-desc" data-i18n="stories.desc">From homemakers to artisans — stories of courage, creativity and financial freedom from our community.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Featured Story -->
+    <div class="hero-story reveal" id="featured-story"></div>
+
+    <!-- All Stories Grid -->
+    <div class="section-header" style="margin-bottom:36px">
+      <h2 class="section-title" style="font-size:1.8rem" data-i18n="stories.more.title">More <span class="text-gradient-gold">Inspiring Journeys</span></h2>
+    </div>
+    <div class="grid-3" id="stories-grid" style="gap:24px; margin-bottom:60px"></div>
+
+    <!-- Share your story CTA -->
+    <div class="reveal" style="background:linear-gradient(135deg,rgba(249,168,37,0.08),rgba(156,39,176,0.08)); border:1px solid var(--border); border-radius:var(--radius-xl); padding:48px; text-align:center;">
+      <div style="font-size:3rem; margin-bottom:16px">🌟</div>
+      <h2 style="font-size:1.8rem; margin-bottom:12px" data-i18n="stories.share.title">Share Your Story</h2>
+      <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 28px; line-height:1.7" data-i18n="stories.share.desc">Built something great? Your journey could inspire thousands of aspiring entrepreneurs in your community. Tell us your story!</p>
+      <a href="https://wa.me/919000000000?text=Hi!%20I%20want%20to%20share%20my%20success%20story%20on%20Community%20Makers'%20Market." target="_blank" class="btn btn-primary btn-lg" data-i18n="btn.share.whatsapp">💬 Share via WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- Story Detail Modal -->
+<div class="modal-overlay" id="story-modal">
+  <div class="modal" style="max-width:580px">
+    <button class="modal-close">✕</button>
+    <div id="story-modal-content"></div>
+  </div>
+</div>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)" data-i18n="footer.back">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script><script src="../js/data.js"></script>
+<script src="../js/main.js"></script>
+<script>
+function renderFeaturedStory() {
+  const featured = CMM_DATA.stories[0];
+  const monthlyLabel = CMM.t('stories.monthly');
+  const readBtn = CMM.t('btn.read.full');
+  document.getElementById('featured-story').innerHTML = `
+    <div>
+      <div class="hero-story-image" style="background:${grads[0]}">${featured.emoji}</div>
+    </div>
+    <div>
+      <span class="badge badge-gold" style="margin-bottom:16px">${featured.tag}</span>
+      <h2 style="font-size:2rem; margin-bottom:8px">${featured.name}</h2>
+      <div style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:20px">📍 ${featured.location} · ${featured.business}</div>
+      <div class="story-income-big">${featured.income}</div>
+      <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px">${monthlyLabel}</div>
+      <p style="color:var(--text-secondary); line-height:1.75; margin-bottom:24px">${featured.story}</p>
+      <blockquote style="border-left:3px solid var(--gold); padding-left:16px; font-style:italic; color:var(--text-secondary); margin-bottom:24px">"${featured.quote}"</blockquote>
+      <button class="btn btn-primary" onclick="showStoryDetail(1)">${readBtn}</button>
+    </div>`;
+}
+
+function renderStoriesGrid() {
+  const storiesGrid = document.getElementById('stories-grid');
+  storiesGrid.innerHTML = '';
+  const monthlyLabel = CMM.t('stories.monthly');
+  const challengeLabel = CMM.t('stories.challenge');
+  const solutionLabel = CMM.t('stories.solution');
+  CMM_DATA.stories.forEach((s, i) => {
+    storiesGrid.innerHTML += `
+      <div class="story-full-card reveal reveal-delay-${(i%3)+1}" onclick="showStoryDetail(${s.id})">
+        <div class="story-card-img" style="background:${grads[i] || grads[0]}">${s.emoji}</div>
+        <div class="story-card-body">
+          <span class="badge badge-teal" style="margin-bottom:10px">${s.tag}</span>
+          <div class="story-card-name">${s.name}</div>
+          <div class="story-card-sub">📍 ${s.location} · Age ${s.age}</div>
+          <div class="story-card-income">${s.income}</div>
+          <p class="story-card-quote">"${s.quote}"</p>
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span style="font-size:0.82rem; color:var(--text-secondary)">${s.business}</span>
+            <span style="font-size:0.82rem; color:var(--gold)">${CMM.t('btn.read.full')}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+  CMM.observeNewRevealElements();
+}
+
+function showStoryDetail(id) {
+  const s = CMM_DATA.stories.find(x => x.id === id);
+  if (!s) return;
+  const gi = CMM_DATA.stories.indexOf(s);
+  const monthlyLabel = CMM.t('stories.monthly');
+  const challengeLabel = CMM.t('stories.challenge');
+  const solutionLabel = CMM.t('stories.solution');
+  const ideaBtn = CMM.t('btn.find.idea');
+  document.getElementById('story-modal-content').innerHTML = `
+    <div style="text-align:center; margin-bottom:24px">
+      <div style="width:80px;height:80px;border-radius:50%;background:${grads[gi]};display:inline-flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:12px">${s.emoji}</div>
+      <h2 style="font-size:1.4rem; margin-bottom:4px">${s.name}</h2>
+      <div style="color:var(--text-secondary); font-size:0.85rem">📍 ${s.location} · Age ${s.age}</div>
+    </div>
+    <div style="text-align:center; margin-bottom:24px">
+      <div style="font-family:var(--font-heading); font-size:1.8rem; font-weight:900; color:var(--teal)">${s.income}</div>
+      <div style="font-size:0.8rem; color:var(--text-muted)">${monthlyLabel}</div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-label">Their Story</div>
+      <div class="detail-value">${s.story}</div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px">
+      <div class="card" style="padding:16px; border-color:rgba(255,107,138,0.3)">
+        <div class="detail-label">${challengeLabel}</div>
+        <div class="detail-value" style="font-size:0.85rem">${s.challenge}</div>
+      </div>
+      <div class="card" style="padding:16px; border-color:rgba(0,191,165,0.3)">
+        <div class="detail-label">${solutionLabel}</div>
+        <div class="detail-value" style="font-size:0.85rem">${s.solution}</div>
+      </div>
+    </div>
+    <blockquote style="border-left:3px solid var(--gold); padding:12px 16px; background:rgba(249,168,37,0.05); border-radius:0 var(--radius-md) var(--radius-md) 0; font-style:italic; color:var(--text-secondary); margin-bottom:20px">"${s.quote}"</blockquote>
+    <a href="ideas.html" class="btn btn-primary" style="width:100%">${ideaBtn}</a>`;
+  CMM.openModal('story-modal');
+}
+
+window.CMM_RERENDER = function(lang) {
+  renderFeaturedStory();
+  renderStoriesGrid();
+};
+
+window.CMM_RERENDER = window.CMM_RERENDER;
+renderFeaturedStory();
+renderStoriesGrid();
+</script>
+</body>
+</html>

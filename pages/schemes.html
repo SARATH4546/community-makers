@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Government Schemes — Community Makers' Market</title>
+  <meta name="description" content="Find government support schemes for entrepreneurs — Mudra Loan, SHG registration, Women Entrepreneur programs, Skill India and more." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 60px; text-align: center; background: linear-gradient(180deg, rgba(92,107,192,0.06) 0%, transparent 100%); }
+    .scheme-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden; transition: var(--transition);
+    }
+    .scheme-card:hover { box-shadow: var(--shadow-card); border-color: var(--border-hover); transform: translateY(-3px); }
+    .scheme-header { padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: center; }
+    .scheme-icon-box { width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--grad-indigo, var(--grad-purple)); display: grid; place-items: center; font-size: 1.6rem; flex-shrink: 0; }
+    .scheme-body { padding: 24px 28px; }
+    .scheme-amount { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+    .scheme-elig { font-size: 0.83rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+    .benefit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+    .benefit-item { display: flex; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); }
+    .benefit-item::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+    .steps-accordion { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .steps-trigger {
+      padding: 14px 18px; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; font-weight: 600; font-size: 0.88rem;
+      background: rgba(255,255,255,0.02); transition: var(--transition-fast);
+    }
+    .steps-trigger:hover { background: rgba(255,255,255,0.05); }
+    .steps-content { display: none; padding: 0 18px 16px; }
+    .steps-content.open { display: block; }
+    .step-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: var(--text-secondary); }
+    .step-item:last-child { border-bottom: none; }
+    .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--grad-gold); display: grid; place-items: center; font-size: 0.72rem; font-weight: 800; color: #000; flex-shrink: 0; }
+    .eligibility-banner {
+      background: linear-gradient(135deg, rgba(92,107,192,0.1), rgba(156,39,176,0.1));
+      border: 1px solid rgba(92,107,192,0.3); border-radius: var(--radius-lg);
+      padding: 24px; margin-bottom: 40px;
+    }
+    @media(max-width:768px) { .scheme-header { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link active">Schemes</a>
+      <a href="community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="learn.html">📚 Learn</a>
+  <a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a><a href="schemes.html">🏛️ Schemes</a><a href="community.html">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" data-i18n="schemes.eyebrow">Government Support</div>
+    <h1 class="section-title"><span data-i18n="schemes.title1">Free Support for</span> <span class="text-gradient-purple" data-i18n="schemes.title2">Your Business</span></h1>
+    <p class="section-desc" data-i18n="schemes.desc">Loans, training, registration, and grants — government schemes available to every entrepreneur. Step-by-step guides included.</p>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap">
+      <div class="badge badge-gold" data-i18n="schemes.badge1">💰 Up to ₹10 Lakhs Loan</div>
+      <div class="badge badge-teal" data-i18n="schemes.badge2">🎓 Free Skill Training</div>
+      <div class="badge badge-green" data-i18n="schemes.badge3">✅ Zero Collateral Options</div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Eligibility Helper Banner -->
+    <div class="eligibility-banner reveal" style="margin-bottom:48px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap">
+        <div style="font-size:2rem">🏛️</div>
+        <div style="flex:1">
+          <div style="font-weight:700; margin-bottom:6px" data-i18n="schemes.helper.title">Not sure which scheme is for you?</div>
+          <div style="font-size:0.87rem; color:var(--text-secondary)" data-i18n="schemes.helper.desc">Most schemes are available to all Indian citizens. Women, SC/ST entrepreneurs, and rural applicants get extra benefits. Click on any scheme below to see step-by-step application process.</div>
+        </div>
+        <a href="community.html" class="btn btn-primary btn-sm" data-i18n="btn.ask.community">Ask Community →</a>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:28px" id="schemes-container"></div>
+  </div>
+</section>
+
+<div style="background:var(--bg-secondary); padding:60px 0; text-align:center">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="section-title" style="font-size:1.8rem; margin-bottom:14px" data-i18n="schemes.help.title">Need Help Applying?</h2>
+      <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 28px" data-i18n="schemes.help.desc">Our community mentors can guide you through the application process. Reach out on WhatsApp.</p>
+      <a href="https://wa.me/919000000000?text=Hi!%20I%20need%20help%20applying%20for%20a%20government%20scheme." target="_blank" class="btn btn-whatsapp btn-lg" data-i18n="btn.get.help">💬 Get Help on WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)" data-i18n="footer.back">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script><script src="../js/data.js"></script>
+<script src="../js/main.js"></script>
+<script>
+const schemeBgs = ['var(--grad-gold)','var(--grad-teal)','var(--grad-purple)','var(--grad-rose)','var(--grad-green)','var(--grad-purple)'];
+const schemeBadges = ['badge-gold','badge-teal','badge-purple','badge-rose','badge-green','badge-purple'];
+
+function toggleSteps(trigger) {
+  const content = trigger.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  document.querySelectorAll('.steps-content').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.steps-trigger .arrow').forEach(a => a.textContent = '▼');
+  if (!isOpen) { content.classList.add('open'); trigger.querySelector('.arrow').textContent = '▲'; }
+}
+
+function renderSchemes() {
+  const container = document.getElementById('schemes-container');
+  container.innerHTML = '';
+  const maxLabel = CMM.t('schemes.max');
+  const eligLabel = CMM.t('schemes.elig');
+  const benefitsLabel = CMM.t('schemes.benefits');
+  const stepsLabel = CMM.t('schemes.steps');
+  const applyBtn = CMM.t('btn.apply.now');
+  const helpBtn = CMM.t('btn.get.help');
+  CMM_DATA.schemes.forEach((s, i) => {
+    container.innerHTML += `
+      <div class="scheme-card reveal">
+        <div class="scheme-header">
+          <div class="scheme-icon-box" style="background:${schemeBgs[i]}">${s.icon}</div>
+          <div style="flex:1">
+            <div class="badge ${schemeBadges[i]}" style="margin-bottom:8px">${s.tag}</div>
+            <h2 style="font-size:1.2rem; margin-bottom:0">${s.name}</h2>
+          </div>
+          <a href="${s.link}" target="_blank" class="btn btn-ghost btn-sm">${CMM.t('btn.official.site')}</a>
+        </div>
+        <div class="scheme-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px">
+            <div>
+              <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:4px">${maxLabel}</div>
+              <div class="scheme-amount">${s.maxAmount}</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:4px">${eligLabel}</div>
+              <div class="scheme-elig">${s.eligibility}</div>
+            </div>
+          </div>
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:10px">${benefitsLabel}</div>
+          <div class="benefit-list" style="margin-bottom:20px">
+            ${s.benefits.map(b => `<div class="benefit-item">${b}</div>`).join('')}
+          </div>
+          <div class="steps-accordion">
+            <div class="steps-trigger" onclick="toggleSteps(this)">
+              <span>${stepsLabel}</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="steps-content">
+              ${s.steps.map((step, si) => `
+                <div class="step-item">
+                  <div class="step-num">${si+1}</div>
+                  <div>${step}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:16px">
+            <a href="${s.link}" target="_blank" class="btn btn-primary btn-sm">${applyBtn}</a>
+            <a href="https://wa.me/919000000000?text=Hi!%20I%20need%20help%20applying%20for%20${encodeURIComponent(s.name)}." target="_blank" class="btn btn-whatsapp btn-sm">${helpBtn}</a>
+          </div>
+        </div>
+      </div>`;
+  });
+  CMM.observeNewRevealElements();
+}
+
+window.CMM_RERENDER = function(lang) { renderSchemes(); };
+renderSchemes();
+</script>
+</body>
+</html>

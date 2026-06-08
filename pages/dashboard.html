@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Community Makers' Market</title>
+  <meta name="description" content="Your personal dashboard — track sales, manage listings, monitor learning progress, and view order history." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 40px) 0 40px; background: linear-gradient(180deg, rgba(249,168,37,0.05) 0%, transparent 100%); }
+    .dash-layout { display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: start; }
+    .dash-sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; position: sticky; top: calc(var(--nav-height) + 16px); }
+    .dash-nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border-radius: var(--radius-md); font-size: 0.87rem; font-weight: 500;
+      color: var(--text-secondary); cursor: pointer; transition: var(--transition-fast);
+      border: 1px solid transparent; width: 100%; background: none; text-align: left;
+    }
+    .dash-nav-item:hover, .dash-nav-item.active { background: rgba(249,168,37,0.08); border-color: rgba(249,168,37,0.25); color: var(--gold); }
+    .role-switcher { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .role-btn {
+      display: block; width: 100%; padding: 8px 14px; border-radius: var(--radius-md);
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      background: none; border: 1px solid var(--border); color: var(--text-secondary);
+      margin-bottom: 6px; transition: var(--transition-fast); text-align: left;
+    }
+    .role-btn.active { background: rgba(249,168,37,0.12); border-color: var(--gold); color: var(--gold); }
+    .metric-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 22px; transition: var(--transition);
+    }
+    .metric-card:hover { border-color: var(--border-hover); }
+    .metric-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .metric-value { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 900; }
+    .metric-change { font-size: 0.8rem; margin-top: 6px; }
+    .metric-change.up   { color: #69F0AE; }
+    .metric-change.down { color: #FF6B8A; }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+    .chart-title { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+    .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+    .tab { padding: 10px 18px; font-size: 0.87rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: var(--transition-fast); background: none; border-top: none; border-left: none; border-right: none; }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .product-row { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 10px; }
+    .product-row-icon { font-size: 1.8rem; }
+    .order-row { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 10px; }
+    .order-status { padding: 4px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; }
+    .status-delivered { background: rgba(0,200,83,0.12); color: #69F0AE; }
+    .status-pending   { background: rgba(249,168,37,0.12); color: var(--gold); }
+    .status-transit   { background: rgba(0,191,165,0.12); color: var(--teal); }
+    .progress-module { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; }
+    @media(max-width:1024px) { .dash-layout { grid-template-columns: 1fr; } .dash-sidebar { position: static; } }
+    @media(max-width:600px) { .grid-4 { grid-template-columns: repeat(2, 1fr) !important; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="dashboard.html" class="btn btn-primary btn-sm">My Dashboard</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="learn.html">📚 Learn</a>
+  <a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a><a href="schemes.html">🏛️ Schemes</a><a href="community.html">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px">
+      <div>
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px">Welcome back,</div>
+        <h1 style="font-size:1.8rem; font-weight:900">Priya Sharma 👋</h1>
+        <div style="color:var(--text-secondary); font-size:0.9rem; margin-top:4px">Member since Jan 2026 · Seller & Learner</div>
+      </div>
+      <div style="display:flex; gap:10px">
+        <a href="marketplace.html" class="btn btn-ghost">🛒 View Marketplace</a>
+        <button class="btn btn-primary" onclick="CMM.showToast('List a new product!', '📦')">+ List Product</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section style="padding:32px 0 80px">
+  <div class="container">
+    <div class="dash-layout">
+      <!-- Sidebar -->
+      <aside class="dash-sidebar">
+        <div class="role-switcher">
+          <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:10px">View As</div>
+          <button class="role-btn active" onclick="switchRole('seller', this)">🏪 Entrepreneur/Seller</button>
+          <button class="role-btn" onclick="switchRole('learner', this)">📚 Learner</button>
+          <button class="role-btn" onclick="switchRole('customer', this)">🛒 Customer</button>
+        </div>
+        <div id="seller-nav">
+          <button class="dash-nav-item active" onclick="switchTab('overview')">📊 Overview</button>
+          <button class="dash-nav-item" onclick="switchTab('listings')">📦 My Listings</button>
+          <button class="dash-nav-item" onclick="switchTab('analytics')">📈 Analytics</button>
+          <button class="dash-nav-item" onclick="switchTab('messages')">💬 Messages</button>
+        </div>
+        <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border)">
+          <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px">Quick Links</div>
+          <a href="schemes.html" class="dash-nav-item" style="font-size:0.82rem">🏛️ Govt. Schemes</a>
+          <a href="learn.html" class="dash-nav-item" style="font-size:0.82rem">📚 Learning Hub</a>
+          <a href="community.html" class="dash-nav-item" style="font-size:0.82rem">👥 Community</a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div>
+        <!-- SELLER VIEW -->
+        <div id="seller-view">
+          <!-- Overview Tab -->
+          <div class="tab-panel active" id="tab-overview">
+            <!-- Metrics -->
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px">
+              <div class="metric-card">
+                <div class="metric-label">This Month Revenue</div>
+                <div class="metric-value text-gradient-gold">₹18,400</div>
+                <div class="metric-change up">↑ 24% vs last month</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Orders Received</div>
+                <div class="metric-value" style="color:var(--teal)">47</div>
+                <div class="metric-change up">↑ 11 new this week</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Active Listings</div>
+                <div class="metric-value" style="color:var(--text-primary)">8</div>
+                <div class="metric-change" style="color:var(--text-muted)">3 pending review</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Avg. Rating</div>
+                <div class="metric-value" style="color:var(--gold)">4.8 ⭐</div>
+                <div class="metric-change up">↑ 0.2 this month</div>
+              </div>
+            </div>
+
+            <!-- Charts row -->
+            <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:20px; margin-bottom:24px">
+              <div class="chart-card">
+                <div class="chart-title">Revenue — Last 6 Months</div>
+                <canvas id="revenueChart" height="200"></canvas>
+              </div>
+              <div class="chart-card">
+                <div class="chart-title">Sales by Category</div>
+                <canvas id="categoryChart" height="200"></canvas>
+              </div>
+            </div>
+
+            <!-- Recent WhatsApp inquiries -->
+            <div class="chart-card" style="margin-bottom:24px">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
+                <div class="chart-title" style="margin-bottom:0">Recent WhatsApp Inquiries</div>
+                <span class="badge badge-whatsapp">3 New</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:10px">
+                ${[
+                  {name:'Kavitha R.', product:'Silk Thread Bangles Set', time:'2 hours ago'},
+                  {name:'Ravi T.', product:'Festival Gift Hamper', time:'4 hours ago'},
+                  {name:'Sunita M.', product:'Silk Thread Bangles Set', time:'Yesterday'},
+                  {name:'Arun K.', product:'Herbal Face Pack Kit', time:'2 days ago'},
+                ].map((inq,i) => `
+                  <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border)">
+                    <div style="width:36px;height:36px;border-radius:50%;background:var(--grad-teal);display:grid;place-items:center;font-weight:700;font-size:0.85rem;flex-shrink:0">${inq.name[0]}</div>
+                    <div style="flex:1">
+                      <div style="font-weight:600;font-size:0.88rem">${inq.name}</div>
+                      <div style="font-size:0.78rem;color:var(--text-secondary)">Enquired about: ${inq.product}</div>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">${inq.time}</div>
+                    <a href="https://wa.me/919000000000" target="_blank" class="btn btn-whatsapp btn-sm">Reply</a>
+                  </div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Listings Tab -->
+          <div class="tab-panel" id="tab-listings">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+              <h2 style="font-size:1.2rem">My Product Listings</h2>
+              <button class="btn btn-primary btn-sm" onclick="CMM.showToast('Product listing form opening!', '📦')">+ Add New Product</button>
+            </div>
+            ${CMM_DATA.products.filter(p => p.seller === 'Lakshmi Crafts' || p.seller === 'Amma\'s Kitchen').concat(CMM_DATA.products.slice(0,3)).slice(0,5).map(p => `
+              <div class="product-row">
+                <div class="product-row-icon">${p.emoji}</div>
+                <div style="flex:1">
+                  <div style="font-weight:700;font-size:0.9rem">${p.name}</div>
+                  <div style="font-size:0.8rem;color:var(--text-secondary)">₹${p.price.toLocaleString('en-IN')} · ${p.reviews} inquiries</div>
+                </div>
+                <span class="badge badge-green">✓ Live</span>
+                <button class="btn btn-ghost btn-sm" onclick="CMM.showToast('Edit mode opened', '✏️')">Edit</button>
+              </div>`).join('')}
+          </div>
+
+          <!-- Analytics Tab -->
+          <div class="tab-panel" id="tab-analytics">
+            <div class="chart-card" style="margin-bottom:24px">
+              <div class="chart-title">Weekly WhatsApp Inquiries</div>
+              <canvas id="weeklyChart" height="200"></canvas>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+              <div class="metric-card">
+                <div class="metric-label">Top Product</div>
+                <div style="font-size:1.1rem; font-weight:800; margin-top:8px">Silk Thread Bangles</div>
+                <div style="font-size:0.83rem; color:var(--text-secondary); margin-top:4px">22 inquiries this month</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Conversion Rate</div>
+                <div class="metric-value text-gradient-teal">68%</div>
+                <div class="metric-change up">↑ 5% from last month</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages Tab -->
+          <div class="tab-panel" id="tab-messages">
+            <div style="text-align:center; padding:60px 20px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg)">
+              <div style="font-size:3rem; margin-bottom:16px">💬</div>
+              <h3 style="font-size:1.2rem; margin-bottom:10px">Customer Messages via WhatsApp</h3>
+              <p style="color:var(--text-secondary); max-width:400px; margin:0 auto 24px; font-size:0.9rem">All buyer inquiries arrive directly in your WhatsApp. Click below to open WhatsApp and respond to customers.</p>
+              <a href="https://wa.me/919000000000" target="_blank" class="btn btn-whatsapp btn-lg">Open WhatsApp →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEARNER VIEW -->
+        <div id="learner-view" style="display:none">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px">
+            <div class="metric-card"><div class="metric-label">Modules Started</div><div class="metric-value" style="color:var(--teal)">3</div></div>
+            <div class="metric-card"><div class="metric-label">Lessons Completed</div><div class="metric-value" style="color:var(--gold)">18</div></div>
+            <div class="metric-card"><div class="metric-label">Downloads</div><div class="metric-value">4</div></div>
+          </div>
+          <div class="chart-card" style="margin-bottom:24px">
+            <div class="chart-title">Learning Progress</div>
+            ${CMM_DATA.modules.map((m, i) => {
+              const pct = [65, 30, 0, 100, 0][i];
+              return `<div class="progress-module">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                  <span style="font-size:0.9rem;font-weight:600">${m.icon} ${m.title}</span>
+                  <span style="font-size:0.82rem;color:var(--text-secondary)">${pct}%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+              </div>`;
+            }).join('')}
+          </div>
+          <a href="learn.html" class="btn btn-primary btn-lg">Continue Learning →</a>
+        </div>
+
+        <!-- CUSTOMER VIEW -->
+        <div id="customer-view" style="display:none">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px">
+            <div class="metric-card"><div class="metric-label">Inquiries Made</div><div class="metric-value" style="color:var(--gold)">12</div></div>
+            <div class="metric-card"><div class="metric-label">Sellers Contacted</div><div class="metric-value" style="color:var(--teal)">7</div></div>
+            <div class="metric-card"><div class="metric-label">Saved Products</div><div class="metric-value">15</div></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Recent Product Inquiries</div>
+            ${CMM_DATA.products.slice(0,4).map(p => `
+              <div class="order-row">
+                <div style="display:flex;gap:12px;align-items:center">
+                  <span style="font-size:1.6rem">${p.emoji}</span>
+                  <div>
+                    <div style="font-weight:600;font-size:0.9rem">${p.name}</div>
+                    <div style="font-size:0.78rem;color:var(--text-secondary)">Seller: ${p.seller}</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span style="font-weight:700;color:var(--gold)">₹${p.price.toLocaleString('en-IN')}</span>
+                  <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price})">💬</button>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script><script src="../js/data.js"></script>
+<script src="../js/main.js"></script>
+<script>
+// Switch role view
+function switchRole(role, btn) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('seller-view').style.display = role === 'seller' ? 'block' : 'none';
+  document.getElementById('learner-view').style.display = role === 'learner' ? 'block' : 'none';
+  document.getElementById('customer-view').style.display = role === 'customer' ? 'block' : 'none';
+}
+
+// Switch dashboard tab
+function switchTab(tab) {
+  document.querySelectorAll('.dash-nav-item').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab)?.classList.add('active');
+  if (tab === 'analytics') initWeeklyChart();
+}
+
+// Revenue Chart
+const revenueCtx = document.getElementById('revenueChart');
+if (revenueCtx) {
+  new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        label: 'Revenue (₹)',
+        data: [6500, 9200, 11800, 14200, 15600, 18400],
+        borderColor: '#F9A825',
+        backgroundColor: 'rgba(249,168,37,0.1)',
+        borderWidth: 2.5,
+        pointRadius: 5,
+        pointBackgroundColor: '#F9A825',
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9E9BB8' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9E9BB8', callback: v => '₹' + v.toLocaleString('en-IN') } }
+      }
+    }
+  });
+}
+
+// Category donut
+const catCtx = document.getElementById('categoryChart');
+if (catCtx) {
+  new Chart(catCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Jewellery', 'Food', 'Home Décor', 'Beauty', 'Other'],
+      datasets: [{
+        data: [35, 25, 20, 12, 8],
+        backgroundColor: ['#F9A825','#00BFA5','#9C27B0','#FF6B8A','#5C6BC0'],
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#9E9BB8', padding: 12, font: { size: 11 } } }
+      },
+      cutout: '65%',
+    }
+  });
+}
+
+// Weekly inquiries chart (loaded on demand)
+function initWeeklyChart() {
+  const el = document.getElementById('weeklyChart');
+  if (!el || el.dataset.init) return;
+  el.dataset.init = '1';
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets: [{
+        label: 'WhatsApp Inquiries',
+        data: [3, 7, 5, 9, 6, 12, 8],
+        backgroundColor: 'rgba(37,211,102,0.4)',
+        borderColor: '#25D366',
+        borderWidth: 1.5,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9E9BB8' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9E9BB8' } }
+      }
+    }
+  });
+}
+window.CMM_RERENDER = function(lang) { location.reload(); };</script>
+</body>
+</html>
