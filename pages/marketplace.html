@@ -141,7 +141,7 @@
           <span id="product-count" style="color:var(--text-secondary); font-size:0.9rem"></span>
           <div style="display:flex; gap:8px; align-items:center">
             <span style="font-size:0.85rem; color:var(--text-muted)" data-i18n="market.sell.label">Want to sell?</span>
-            <a href="dashboard.html" class="btn btn-ghost btn-sm" data-i18n="market.sell.btn">List Your Product →</a>
+            <button class="btn btn-ghost btn-sm btn-start-selling" data-i18n="market.sell.btn" onclick="CMM.openSellerModal()">List Your Product →</button>
           </div>
         </div>
         <div class="products-grid" id="products-grid"></div>
@@ -209,10 +209,13 @@ function renderProducts() {
   const reviewsLabel = CMM.t('market.reviews');
   products.forEach((p, i) => {
     const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+    const imgHtml = p.image
+      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><span style="display:none;font-size:4rem;position:absolute;inset:0;align-items:center;justify-content:center">${p.emoji}</span>`
+      : `<span style="font-size:4rem">${p.emoji}</span>`;
     grid.innerHTML += `
       <div class="product-card">
-        <div class="product-image" onclick="showProduct(${p.id})" style="cursor:pointer">
-          <span>${p.emoji}</span>
+        <div class="product-image" onclick="showProduct(${p.id})" style="cursor:pointer;position:relative;overflow:hidden">
+          ${imgHtml}
           <span class="product-badge badge badge-green">${inStockLabel}</span>
         </div>
         <div class="product-body">
@@ -241,7 +244,11 @@ function showProduct(id) {
   const disc = Math.round((1 - p.price / p.originalPrice) * 100);
   document.getElementById('product-modal-content').innerHTML = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start">
-      <div style="background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08)); border-radius:var(--radius-lg); height:200px; display:grid; place-items:center; font-size:5.5rem;">${p.emoji}</div>
+      <div style="border-radius:var(--radius-lg); height:220px; overflow:hidden; position:relative; background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08)); display:grid; place-items:center">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><span style="display:none;font-size:5rem;position:absolute;inset:0;align-items:center;justify-content:center">${p.emoji}</span>`
+          : `<span style="font-size:5.5rem">${p.emoji}</span>`}
+      </div>
       <div>
         <div class="badge badge-green" style="margin-bottom:10px">✓ In Stock</div>
         <h2 style="font-size:1.2rem; margin-bottom:6px">${p.name}</h2>
@@ -269,9 +276,12 @@ function showSeller(productId) {
   const p = CMM_DATA.products.find(x => x.id === productId);
   if (!p) return;
   const sellerProducts = CMM_DATA.products.filter(x => x.seller === p.seller);
+  const avatarHtml = p.image
+    ? `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;display:inline-block;margin-bottom:12px"><img src="${p.image}" alt="${p.seller}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:2rem>${p.emoji}</span>'" /></div>`
+    : `<div style="width:72px;height:72px;border-radius:50%;background:var(--grad-teal);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:12px">${p.emoji}</div>`;
   document.getElementById('seller-modal-content').innerHTML = `
     <div style="text-align:center; margin-bottom:24px">
-      <div style="width:72px; height:72px; border-radius:50%; background:var(--grad-teal); display:inline-flex; align-items:center; justify-content:center; font-size:2rem; margin-bottom:12px">${p.emoji}</div>
+      ${avatarHtml}
       <h2 style="font-size:1.3rem">${p.seller}</h2>
       <div style="color:var(--text-secondary); font-size:0.88rem; margin-top:4px">📍 ${p.location} · Verified Seller</div>
     </div>
@@ -280,15 +290,19 @@ function showSeller(productId) {
       <span class="badge badge-teal">${sellerProducts.length} Products</span>
     </div>
     <h3 style="font-size:0.9rem; margin-bottom:14px; color:var(--text-secondary)">All Products by ${p.seller}</h3>
-    ${sellerProducts.map(sp => `
-      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg-card); border-radius:var(--radius-md); margin-bottom:10px; border:1px solid var(--border)">
-        <span style="font-size:2rem">${sp.emoji}</span>
-        <div style="flex:1">
-          <div style="font-weight:600; font-size:0.9rem">${sp.name}</div>
-          <div style="font-size:0.82rem; color:var(--teal)">₹${sp.price.toLocaleString('en-IN')}</div>
+    ${sellerProducts.map(sp => {
+      const thumbHtml = sp.image
+        ? `<div style="width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0"><img src="${sp.image}" alt="${sp.name}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='${sp.emoji}'" /></div>`
+        : `<div style="font-size:2rem;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);border-radius:var(--radius-md);flex-shrink:0">${sp.emoji}</div>`;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-md);margin-bottom:10px;border:1px solid var(--border)">
+        ${thumbHtml}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.9rem">${sp.name}</div>
+          <div style="font-size:0.82rem;color:var(--teal)">₹${sp.price.toLocaleString('en-IN')}</div>
         </div>
         <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${sp.sellerPhone}','${sp.name}','${sp.seller}',${sp.price})">💬</button>
-      </div>`).join('')}
+      </div>`;
+    }).join('')}
     <button class="btn btn-whatsapp" style="width:100%; margin-top:16px" onclick="CMM.openWhatsApp('${p.sellerPhone}','','${p.seller}','')">
       💬 Message ${p.seller} on WhatsApp
     </button>`;
