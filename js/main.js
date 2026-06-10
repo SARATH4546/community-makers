@@ -7,6 +7,14 @@
 let currentLang = localStorage.getItem('cmm-lang') || 'en';
 let _langInitDone = false;
 
+// Resolve root-relative asset paths (data.js stores paths like "marketplace photos/...")
+// Works correctly from both / (index.html) and /pages/ subpages
+const _isInPagesDir = window.location.pathname.includes('/pages/');
+function imgPath(rootRelPath) {
+  if (!rootRelPath) return null;
+  return _isInPagesDir ? '../' + rootRelPath : rootRelPath;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initScrollReveal();
@@ -413,4 +421,5 @@ window.CMM = {
   applyLang,
   observeNewRevealElements,
   openSellerModal,
+  imgPath,
 };
