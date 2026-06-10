@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Marketplace — Community Makers' Market</title>
-  <meta name="description" content="Shop authentic handmade products from local artisans. Contact sellers directly via WhatsApp for a personal buying experience." />
+  <meta name="description" content="Shop authentic handmade products from local artisans. Contact sellers directly via WhatsApp." />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
     .page-hero { padding: calc(var(--nav-height) + 60px) 0 40px; background: linear-gradient(180deg, rgba(0,191,165,0.06) 0%, transparent 100%); }
@@ -13,13 +13,12 @@
     .sidebar-section { margin-bottom: 28px; }
     .sidebar-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
     .sidebar-filters { display: flex; flex-direction: column; gap: 8px; }
-    .sf-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition-fast); text-align: left; }
+    .sf-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition-fast); text-align: left; width: 100%; }
     .sf-btn:hover, .sf-btn.active { background: rgba(0,191,165,0.1); border-color: rgba(0,191,165,0.4); color: var(--teal); }
     .price-range { display: flex; flex-direction: column; gap: 8px; }
     .price-range input[type=range] { width: 100%; accent-color: var(--teal); }
     .price-display { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-secondary); }
-    .sort-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .sort-bar select { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-primary); font-size: 0.85rem; outline: none; cursor: pointer; }
+    .sort-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
     .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
     .whatsapp-cta-box {
       background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(18,140,126,0.1));
@@ -31,7 +30,6 @@
     .product-detail-modal .modal { max-width: 680px; }
     .pd-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     .pd-image { background: linear-gradient(135deg, rgba(0,191,165,0.08), rgba(249,168,37,0.08)); border-radius: var(--radius-lg); height: 220px; display: grid; place-items: center; font-size: 6rem; }
-
     @media (max-width: 1024px) {
       .marketplace-layout { grid-template-columns: 1fr; }
       .sidebar { position: static; }
@@ -80,29 +78,26 @@
 
 <section class="section">
   <div class="container">
-
-    <!-- WhatsApp CTA Banner -->
     <div class="whatsapp-cta-box reveal">
       <div class="wa-icon">💬</div>
       <div>
         <div style="font-weight:700; font-size:1rem; margin-bottom:4px" data-i18n="market.wa.title">Buy Directly via WhatsApp</div>
-        <div style="font-size:0.87rem; color:var(--text-secondary)" data-i18n="market.wa.desc">No payment gateway needed. Click "Buy via WhatsApp" on any product to chat directly with the seller and negotiate terms, delivery, and payment.</div>
+        <div style="font-size:0.87rem; color:var(--text-secondary)" data-i18n="market.wa.desc">No payment gateway needed. Click "Buy via WhatsApp" on any product to chat directly with the seller.</div>
       </div>
       <span class="badge badge-whatsapp" style="flex-shrink:0; font-size:0.75rem" data-i18n="market.wa.badge">Secure &amp; Personal</span>
     </div>
 
     <div class="marketplace-layout">
-      <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-section">
           <div class="sidebar-title" data-i18n="market.label.category">Category</div>
           <div class="sidebar-filters" id="cat-filters">
             <button class="sf-btn active" data-cat="all" data-i18n="market.cat.all">🛍️ All Products</button>
-            <button class="sf-btn" data-cat="food" data-i18n="market.cat.food">🍲 Food & Pickles</button>
+            <button class="sf-btn" data-cat="food" data-i18n="market.cat.food">🍲 Food &amp; Pickles</button>
             <button class="sf-btn" data-cat="jewelry" data-i18n="market.cat.jewelry">💍 Jewellery</button>
             <button class="sf-btn" data-cat="home-decor" data-i18n="market.cat.decor">🏠 Home Décor</button>
             <button class="sf-btn" data-cat="fashion" data-i18n="market.cat.fashion">👗 Fashion</button>
-            <button class="sf-btn" data-cat="beauty" data-i18n="market.cat.beauty">🌿 Beauty & Wellness</button>
+            <button class="sf-btn" data-cat="beauty" data-i18n="market.cat.beauty">🌿 Beauty &amp; Wellness</button>
             <button class="sf-btn" data-cat="art" data-i18n="market.cat.art">🖼️ Art</button>
             <button class="sf-btn" data-cat="gifting" data-i18n="market.cat.gift">🎁 Gifting</button>
           </div>
@@ -133,16 +128,15 @@
             <button class="sf-btn" data-loc="Warangal">Warangal</button>
           </div>
         </div>
+        <div style="padding-top:16px; border-top:1px solid var(--border)">
+          <span style="font-size:0.85rem; color:var(--text-muted)" data-i18n="market.sell.label">Want to sell?</span>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px; width:100%" id="list-product-btn" data-i18n="market.sell.btn">List Your Product →</button>
+        </div>
       </aside>
 
-      <!-- Products -->
       <div>
         <div class="sort-bar">
           <span id="product-count" style="color:var(--text-secondary); font-size:0.9rem"></span>
-          <div style="display:flex; gap:8px; align-items:center">
-            <span style="font-size:0.85rem; color:var(--text-muted)" data-i18n="market.sell.label">Want to sell?</span>
-            <button class="btn btn-ghost btn-sm btn-start-selling" data-i18n="market.sell.btn" onclick="CMM.openSellerModal()">List Your Product →</button>
-          </div>
         </div>
         <div class="products-grid" id="products-grid"></div>
         <div id="no-products" style="display:none; text-align:center; padding:60px; color:var(--text-secondary)">
@@ -177,171 +171,418 @@
 <script src="../js/data.js"></script>
 <script src="../js/main.js"></script>
 <script>
-let filterCat = 'all', filterLoc = 'all', filterSort = 'default', maxPrice = 5000;
+'use strict';
+var filterCat  = 'all';
+var filterLoc  = 'all';
+var filterSort = 'default';
+var maxPrice   = 5000;
 
 function getStars(r) {
-  const full = Math.floor(r);
-  return '★'.repeat(full) + (r - full >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(r));
+  var full = Math.floor(r);
+  var half = (r - full) >= 0.5 ? '½' : '';
+  return '★'.repeat(full) + half + '☆'.repeat(5 - Math.ceil(r));
 }
 
+// ── Main render function ──────────────────────
 function renderProducts() {
-  const grid = document.getElementById('products-grid');
-  const noP  = document.getElementById('no-products');
-  const count = document.getElementById('product-count');
-  let products = CMM_DATA.products.filter(p => {
-    const catOk = filterCat === 'all' || p.category === filterCat;
-    const locOk = filterLoc === 'all' || p.location === filterLoc;
-    const priceOk = p.price <= maxPrice;
+  var grid  = document.getElementById('products-grid');
+  var noP   = document.getElementById('no-products');
+  var count = document.getElementById('product-count');
+
+  // Filter
+  var products = CMM_DATA.products.filter(function(p) {
+    var catOk   = filterCat === 'all' || p.category === filterCat;
+    var locOk   = filterLoc === 'all' || p.location === filterLoc;
+    var priceOk = p.price <= maxPrice;
     return catOk && locOk && priceOk;
   });
-  if (filterSort === 'price-asc') products.sort((a,b) => a.price - b.price);
-  else if (filterSort === 'price-desc') products.sort((a,b) => b.price - a.price);
-  else if (filterSort === 'rating') products.sort((a,b) => b.rating - a.rating);
 
-  count.textContent = `${products.length} ${CMM.t('market.reviews') === 'reviews' ? 'product' : 'ఉత్పత్తులు'}${products.length !== 1 ? 's' : ''} found`;
-  grid.innerHTML = '';
+  // Sort
+  if (filterSort === 'price-asc')  products.sort(function(a,b){ return a.price - b.price; });
+  if (filterSort === 'price-desc') products.sort(function(a,b){ return b.price - a.price; });
+  if (filterSort === 'rating')     products.sort(function(a,b){ return b.rating - a.rating; });
+
+  var lang = CMM.currentLang();
+  count.textContent = products.length + (lang === 'te' ? ' ఉత్పత్తులు కనుగొనబడ్డాయి' : ' products found');
+
+  // Clear grid safely
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+
   if (!products.length) { noP.style.display = 'block'; return; }
   noP.style.display = 'none';
-  const inStockLabel = CMM.t('badge.in.stock');
-  const buyLabel = CMM.t('btn.buy.whatsapp');
-  const viewLabel = CMM.t('btn.view.details');
-  const offLabel = CMM.t('market.off');
-  const reviewsLabel = CMM.t('market.reviews');
-  products.forEach((p, i) => {
-    const disc = Math.round((1 - p.price / p.originalPrice) * 100);
-    const imgHtml = CMM.imgPath(p.image)
-      ? `<img src="${CMM.imgPath(p.image)}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><span style="display:none;font-size:4rem;position:absolute;inset:0;align-items:center;justify-content:center">${p.emoji}</span>`
-      : `<span style="font-size:4rem">${p.emoji}</span>`;
-    grid.innerHTML += `
-      <div class="product-card">
-        <div class="product-image" onclick="showProduct(${p.id})" style="cursor:pointer;position:relative;overflow:hidden">
-          ${imgHtml}
-          <span class="product-badge badge badge-green">${inStockLabel}</span>
-        </div>
-        <div class="product-body">
-          <div class="product-name" onclick="showProduct(${p.id})" style="cursor:pointer">${p.name}</div>
-          <div class="product-seller" onclick="showSeller(${p.id})" style="cursor:pointer">🏪 ${p.seller} · 📍 ${p.location}</div>
-          <div class="product-rating"><span class="stars">${getStars(p.rating)}</span> ${p.rating} (${p.reviews} ${reviewsLabel})</div>
-          <div class="product-price-row">
-            <span class="price-current">₹${p.price.toLocaleString('en-IN')}</span>
-            <span class="price-original">₹${p.originalPrice.toLocaleString('en-IN')}</span>
-            <span class="price-discount">${disc}% ${offLabel}</span>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-            <button class="btn btn-ghost btn-sm" onclick="showProduct(${p.id})">${viewLabel}</button>
-            <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price})">
-              ${buyLabel}
-            </button>
-          </div>
-        </div>
-      </div>`;
+
+  var inStockLabel = CMM.t('badge.in.stock');
+  var buyLabel     = CMM.t('btn.buy.whatsapp');
+  var viewLabel    = CMM.t('btn.view.details');
+  var offLabel     = CMM.t('market.off');
+  var reviewsLabel = CMM.t('market.reviews');
+
+  products.forEach(function(p) {
+    var disc   = Math.round((1 - p.price / p.originalPrice) * 100);
+    var imgSrc = CMM.imgPath(p.image);
+
+    // ── Card container ──
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.pid = String(p.id);
+
+    // ── Image area ──
+    var imgDiv = document.createElement('div');
+    imgDiv.className = 'product-image';
+    imgDiv.style.cursor = 'pointer';
+    imgDiv.style.overflow = 'hidden';
+    imgDiv.dataset.action = 'view';
+
+    if (imgSrc) {
+      var img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = p.name;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+      var fallback = document.createElement('span');
+      fallback.textContent = p.emoji;
+      fallback.style.cssText = 'display:none;font-size:4rem;position:absolute;inset:0;align-items:center;justify-content:center';
+      img.onerror = function() {
+        img.style.display = 'none';
+        fallback.style.display = 'flex';
+      };
+      imgDiv.appendChild(img);
+      imgDiv.appendChild(fallback);
+    } else {
+      var em = document.createElement('span');
+      em.textContent = p.emoji;
+      em.style.fontSize = '4rem';
+      imgDiv.appendChild(em);
+    }
+
+    var badge = document.createElement('span');
+    badge.className = 'product-badge badge badge-green';
+    badge.textContent = inStockLabel;
+    imgDiv.appendChild(badge);
+
+    // ── Body ──
+    var body = document.createElement('div');
+    body.className = 'product-body';
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'product-name';
+    nameEl.style.cursor = 'pointer';
+    nameEl.dataset.action = 'view';
+    nameEl.textContent = p.name;
+
+    var sellerEl = document.createElement('div');
+    sellerEl.className = 'product-seller';
+    sellerEl.style.cursor = 'pointer';
+    sellerEl.dataset.action = 'seller';
+    sellerEl.textContent = '🏪 ' + p.seller + ' · 📍 ' + p.location;
+
+    var ratingEl = document.createElement('div');
+    ratingEl.className = 'product-rating';
+    ratingEl.innerHTML = '<span class="stars">' + getStars(p.rating) + '</span> ' + p.rating + ' (' + p.reviews + ' ' + reviewsLabel + ')';
+
+    var priceRow = document.createElement('div');
+    priceRow.className = 'product-price-row';
+    priceRow.innerHTML =
+      '<span class="price-current">₹' + p.price.toLocaleString('en-IN') + '</span>' +
+      '<span class="price-original">₹' + p.originalPrice.toLocaleString('en-IN') + '</span>' +
+      '<span class="price-discount">' + disc + '% ' + offLabel + '</span>';
+
+    var btnRow = document.createElement('div');
+    btnRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px';
+
+    var viewBtn = document.createElement('button');
+    viewBtn.className = 'btn btn-ghost btn-sm';
+    viewBtn.dataset.action = 'view';
+    viewBtn.textContent = viewLabel;
+
+    var buyBtn = document.createElement('button');
+    buyBtn.className = 'btn btn-whatsapp btn-sm';
+    buyBtn.dataset.action = 'buy';
+    buyBtn.textContent = '💬 ' + buyLabel;
+
+    btnRow.appendChild(viewBtn);
+    btnRow.appendChild(buyBtn);
+
+    body.appendChild(nameEl);
+    body.appendChild(sellerEl);
+    body.appendChild(ratingEl);
+    body.appendChild(priceRow);
+    body.appendChild(btnRow);
+
+    card.appendChild(imgDiv);
+    card.appendChild(body);
+    grid.appendChild(card);
   });
 }
 
-function showProduct(id) {
-  const p = CMM_DATA.products.find(x => x.id === id);
+// ── Event delegation — one listener handles all card clicks ──
+document.getElementById('products-grid').addEventListener('click', function(e) {
+  var card = e.target.closest('.product-card');
+  if (!card) return;
+  var pid = parseInt(card.dataset.pid, 10);
+  var actionEl = e.target.closest('[data-action]');
+  if (!actionEl) return;
+  var action = actionEl.dataset.action;
+  if (action === 'view')   { showProduct(pid); return; }
+  if (action === 'seller') { showSeller(pid);  return; }
+  if (action === 'buy') {
+    var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
+    if (p) CMM.openWhatsApp(p.sellerPhone, p.name, p.seller, p.price);
+  }
+});
+
+// ── Product detail modal ──
+function showProduct(pid) {
+  var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
   if (!p) return;
-  const disc = Math.round((1 - p.price / p.originalPrice) * 100);
-  document.getElementById('product-modal-content').innerHTML = `
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start">
-      <div style="border-radius:var(--radius-lg); height:220px; overflow:hidden; position:relative; background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08)); display:grid; place-items:center">
-        ${CMM.imgPath(p.image) ? `<img src="${CMM.imgPath(p.image)}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><span style="display:none;font-size:5rem;position:absolute;inset:0;align-items:center;justify-content:center">${p.emoji}</span>`
-          : `<span style="font-size:5.5rem">${p.emoji}</span>`}
-      </div>
-      <div>
-        <div class="badge badge-green" style="margin-bottom:10px">✓ In Stock</div>
-        <h2 style="font-size:1.2rem; margin-bottom:6px">${p.name}</h2>
-        <div style="font-size:0.85rem; color:var(--teal); margin-bottom:12px">by ${p.seller} · 📍 ${p.location}</div>
-        <div class="product-rating" style="margin-bottom:14px"><span class="stars">${getStars(p.rating)}</span> ${p.rating} (${p.reviews} reviews)</div>
-        <div class="product-price-row" style="margin-bottom:16px">
-          <span class="price-current" style="font-size:1.5rem">₹${p.price.toLocaleString('en-IN')}</span>
-          <span class="price-original">₹${p.originalPrice.toLocaleString('en-IN')}</span>
-          <span class="price-discount">${disc}% off</span>
-        </div>
-      </div>
-    </div>
-    <p style="color:var(--text-secondary); line-height:1.7; margin:20px 0">${p.desc}</p>
-    <div style="background:rgba(37,211,102,0.06); border:1px solid rgba(37,211,102,0.2); border-radius:var(--radius-md); padding:16px; margin-bottom:20px">
-      <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px">💬 How to Buy</div>
-      <div style="font-size:0.85rem; color:var(--text-secondary)">Click the WhatsApp button below. You'll be connected directly to the seller with a pre-filled message about this product. Discuss delivery, payment, and customisation with them personally.</div>
-    </div>
-    <button class="btn btn-whatsapp btn-lg" style="width:100%" onclick="CMM.openWhatsApp('${p.sellerPhone}','${p.name}','${p.seller}',${p.price}); CMM.showToast('Opening WhatsApp...', '💬')">
-      💬 Contact ${p.seller} on WhatsApp
-    </button>`;
+  var disc   = Math.round((1 - p.price / p.originalPrice) * 100);
+  var imgSrc = CMM.imgPath(p.image);
+
+  var content = document.getElementById('product-modal-content');
+  // Clear
+  while (content.firstChild) content.removeChild(content.firstChild);
+
+  var layout = document.createElement('div');
+  layout.className = 'pd-layout';
+
+  // Left: image
+  var imgWrap = document.createElement('div');
+  if (imgSrc) {
+    imgWrap.style.cssText = 'height:220px;border-radius:var(--radius-lg);overflow:hidden;background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08))';
+    var mImg = document.createElement('img');
+    mImg.src = imgSrc;
+    mImg.alt = p.name;
+    mImg.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    var mFallback = document.createElement('div');
+    mFallback.className = 'pd-image';
+    mFallback.textContent = p.emoji;
+    mFallback.style.display = 'none';
+    mImg.onerror = function() { mImg.style.display='none'; mFallback.style.display='grid'; };
+    imgWrap.appendChild(mImg);
+    imgWrap.appendChild(mFallback);
+  } else {
+    imgWrap.className = 'pd-image';
+    imgWrap.textContent = p.emoji;
+  }
+
+  // Right: details
+  var details = document.createElement('div');
+
+  var catBadge = document.createElement('div');
+  catBadge.className = 'section-eyebrow';
+  catBadge.style.marginBottom = '8px';
+  catBadge.textContent = p.category;
+
+  var title = document.createElement('h2');
+  title.style.cssText = 'font-size:1.3rem;margin-bottom:8px';
+  title.textContent = p.name;
+
+  var sellerInfo = document.createElement('div');
+  sellerInfo.style.cssText = 'color:var(--teal);font-size:0.85rem;margin-bottom:12px';
+  sellerInfo.textContent = 'by ' + p.seller + ' · 📍 ' + p.location;
+
+  var ratingDiv = document.createElement('div');
+  ratingDiv.className = 'product-rating';
+  ratingDiv.style.marginBottom = '14px';
+  ratingDiv.innerHTML = '<span class="stars">' + getStars(p.rating) + '</span> ' + p.rating + ' (' + p.reviews + ' reviews)';
+
+  var priceEl = document.createElement('div');
+  priceEl.style.cssText = 'font-size:1.4rem;font-weight:900;color:var(--gold);margin-bottom:4px';
+  priceEl.textContent = '₹' + p.price.toLocaleString('en-IN');
+
+  var origEl = document.createElement('div');
+  origEl.style.cssText = 'font-size:0.82rem;color:var(--text-muted);text-decoration:line-through;margin-bottom:16px';
+  origEl.textContent = '₹' + p.originalPrice.toLocaleString('en-IN') + ' (' + disc + '% off)';
+
+  var descEl = document.createElement('p');
+  descEl.style.cssText = 'font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px';
+  descEl.textContent = p.desc;
+
+  var tagsDiv = document.createElement('div');
+  tagsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px';
+  (p.tags || []).forEach(function(t) {
+    var tag = document.createElement('span');
+    tag.className = 'badge badge-muted';
+    tag.textContent = t;
+    tagsDiv.appendChild(tag);
+  });
+
+  var note = document.createElement('div');
+  note.style.cssText = 'font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px';
+  note.textContent = "Click the WhatsApp button below to connect directly with the seller.";
+
+  var waBtn = document.createElement('button');
+  waBtn.className = 'btn btn-whatsapp btn-lg';
+  waBtn.style.width = '100%';
+  waBtn.textContent = '💬 Contact ' + p.seller + ' on WhatsApp';
+  waBtn.addEventListener('click', function() {
+    CMM.openWhatsApp(p.sellerPhone, p.name, p.seller, p.price);
+    CMM.showToast('Opening WhatsApp...', '💬');
+  });
+
+  details.appendChild(catBadge);
+  details.appendChild(title);
+  details.appendChild(sellerInfo);
+  details.appendChild(ratingDiv);
+  details.appendChild(priceEl);
+  details.appendChild(origEl);
+  details.appendChild(descEl);
+  details.appendChild(tagsDiv);
+  details.appendChild(note);
+  details.appendChild(waBtn);
+
+  layout.appendChild(imgWrap);
+  layout.appendChild(details);
+  content.appendChild(layout);
+
   CMM.openModal('product-modal');
 }
 
-function showSeller(productId) {
-  const p = CMM_DATA.products.find(x => x.id === productId);
+// ── Seller profile modal ──
+function showSeller(pid) {
+  var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
   if (!p) return;
-  const sellerProducts = CMM_DATA.products.filter(x => x.seller === p.seller);
-  const avatarHtml = CMM.imgPath(p.image)
-    ? `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;display:inline-block;margin-bottom:12px"><img src="${CMM.imgPath(p.image)}" alt="${p.seller}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span style=font-size:2rem>${p.emoji}</span>'" /></div>`
-    : `<div style="width:72px;height:72px;border-radius:50%;background:var(--grad-teal);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:12px">${p.emoji}</div>`;
-  document.getElementById('seller-modal-content').innerHTML = `
-    <div style="text-align:center; margin-bottom:24px">
-      ${avatarHtml}
-      <h2 style="font-size:1.3rem">${p.seller}</h2>
-      <div style="color:var(--text-secondary); font-size:0.88rem; margin-top:4px">📍 ${p.location} · Verified Seller</div>
-    </div>
-    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:24px">
-      <span class="badge badge-green">✓ Verified</span>
-      <span class="badge badge-teal">${sellerProducts.length} Products</span>
-    </div>
-    <h3 style="font-size:0.9rem; margin-bottom:14px; color:var(--text-secondary)">All Products by ${p.seller}</h3>
-    ${sellerProducts.map(sp => {
-      const thumbHtml = CMM.imgPath(sp.image)
-        ? `<div style="width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0"><img src="${CMM.imgPath(sp.image)}" alt="${sp.name}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='${sp.emoji}'" /></div>`
-        : `<div style="font-size:2rem;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);border-radius:var(--radius-md);flex-shrink:0">${sp.emoji}</div>`;
-      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-md);margin-bottom:10px;border:1px solid var(--border)">
-        ${thumbHtml}
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:0.9rem">${sp.name}</div>
-          <div style="font-size:0.82rem;color:var(--teal)">₹${sp.price.toLocaleString('en-IN')}</div>
-        </div>
-        <button class="btn btn-whatsapp btn-sm" onclick="CMM.openWhatsApp('${sp.sellerPhone}','${sp.name}','${sp.seller}',${sp.price})">💬</button>
-      </div>`;
-    }).join('')}
-    <button class="btn btn-whatsapp" style="width:100%; margin-top:16px" onclick="CMM.openWhatsApp('${p.sellerPhone}','','${p.seller}','')">
-      💬 Message ${p.seller} on WhatsApp
-    </button>`;
+  var sellerProducts = CMM_DATA.products.filter(function(x){ return x.seller === p.seller; });
+  var imgSrc = CMM.imgPath(p.image);
+
+  var el = document.getElementById('seller-modal-content');
+  while (el.firstChild) el.removeChild(el.firstChild);
+
+  // Header
+  var header = document.createElement('div');
+  header.style.cssText = 'text-align:center;margin-bottom:24px';
+
+  var avatarWrap = document.createElement('div');
+  avatarWrap.style.cssText = 'width:72px;height:72px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:var(--grad-teal);font-size:2rem;margin-bottom:12px';
+  if (imgSrc) {
+    var avImg = document.createElement('img');
+    avImg.src = imgSrc;
+    avImg.alt = p.seller;
+    avImg.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    avImg.onerror = function() { avatarWrap.textContent = p.emoji; };
+    avatarWrap.appendChild(avImg);
+  } else {
+    avatarWrap.textContent = p.emoji;
+  }
+
+  var sellerName = document.createElement('h2');
+  sellerName.style.fontSize = '1.3rem';
+  sellerName.textContent = p.seller;
+
+  var sellerLoc = document.createElement('div');
+  sellerLoc.style.cssText = 'color:var(--text-secondary);font-size:0.88rem;margin-top:4px';
+  sellerLoc.textContent = '📍 ' + p.location + ' · Verified Seller';
+
+  header.appendChild(avatarWrap);
+  header.appendChild(sellerName);
+  header.appendChild(sellerLoc);
+
+  var badges = document.createElement('div');
+  badges.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-bottom:24px';
+  badges.innerHTML = '<span class="badge badge-green">✓ Verified</span><span class="badge badge-teal">' + sellerProducts.length + ' Products</span>';
+
+  var productsTitle = document.createElement('h3');
+  productsTitle.style.cssText = 'font-size:0.9rem;margin-bottom:14px;color:var(--text-secondary)';
+  productsTitle.textContent = 'All Products by ' + p.seller;
+
+  var spList = document.createElement('div');
+  sellerProducts.forEach(function(sp) {
+    var spImgSrc = CMM.imgPath(sp.image);
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-md);margin-bottom:10px;border:1px solid var(--border)';
+
+    var thumb = document.createElement('div');
+    thumb.style.cssText = 'width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:1.6rem';
+    if (spImgSrc) {
+      var spImgEl = document.createElement('img');
+      spImgEl.src = spImgSrc;
+      spImgEl.alt = sp.name;
+      spImgEl.style.cssText = 'width:100%;height:100%;object-fit:cover';
+      spImgEl.onerror = function() { thumb.textContent = sp.emoji; };
+      thumb.appendChild(spImgEl);
+    } else {
+      thumb.textContent = sp.emoji;
+    }
+
+    var info = document.createElement('div');
+    info.style.flex = '1';
+    var spName = document.createElement('div');
+    spName.style.cssText = 'font-weight:600;font-size:0.9rem';
+    spName.textContent = sp.name;
+    var spPrice = document.createElement('div');
+    spPrice.style.cssText = 'font-size:0.82rem;color:var(--teal)';
+    spPrice.textContent = '₹' + sp.price.toLocaleString('en-IN');
+    info.appendChild(spName);
+    info.appendChild(spPrice);
+
+    var spBtn = document.createElement('button');
+    spBtn.className = 'btn btn-whatsapp btn-sm';
+    spBtn.textContent = '💬';
+    (function(s){ spBtn.addEventListener('click', function(){ CMM.openWhatsApp(s.sellerPhone, s.name, s.seller, s.price); }); })(sp);
+
+    row.appendChild(thumb);
+    row.appendChild(info);
+    row.appendChild(spBtn);
+    spList.appendChild(row);
+  });
+
+  var msgBtn = document.createElement('button');
+  msgBtn.className = 'btn btn-whatsapp';
+  msgBtn.style.cssText = 'width:100%;margin-top:16px';
+  msgBtn.textContent = '💬 Message ' + p.seller + ' on WhatsApp';
+  msgBtn.addEventListener('click', function(){ CMM.openWhatsApp(p.sellerPhone, '', p.seller, ''); });
+
+  el.appendChild(header);
+  el.appendChild(badges);
+  el.appendChild(productsTitle);
+  el.appendChild(spList);
+  el.appendChild(msgBtn);
+
   CMM.openModal('seller-modal');
 }
 
+// ── Price slider ──
 function updatePrice(val) {
-  maxPrice = parseInt(val);
-  document.getElementById('price-label').textContent = '₹' + parseInt(val).toLocaleString('en-IN');
+  maxPrice = parseInt(val, 10);
+  document.getElementById('price-label').textContent = '₹' + maxPrice.toLocaleString('en-IN');
   renderProducts();
 }
 
-// Sort filter listener
-document.querySelector('#sort-filters') && document.getElementById('sort-filters').addEventListener('click', e => {
-  if (!e.target.classList.contains('sf-btn')) return;
-  document.querySelectorAll('#sort-filters .sf-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  filterSort = e.target.dataset.sort;
+// ── Filter listeners ──
+document.getElementById('cat-filters').addEventListener('click', function(e) {
+  var btn = e.target.closest('.sf-btn');
+  if (!btn) return;
+  document.querySelectorAll('#cat-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  filterCat = btn.dataset.cat;
   renderProducts();
 });
 
-document.getElementById('cat-filters').addEventListener('click', e => {
-  if (!e.target.classList.contains('sf-btn')) return;
-  document.querySelectorAll('#cat-filters .sf-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  filterCat = e.target.dataset.cat;
+document.getElementById('sort-filters').addEventListener('click', function(e) {
+  var btn = e.target.closest('.sf-btn');
+  if (!btn) return;
+  document.querySelectorAll('#sort-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  filterSort = btn.dataset.sort;
   renderProducts();
 });
 
-document.getElementById('loc-filters').addEventListener('click', e => {
-  if (!e.target.classList.contains('sf-btn')) return;
-  document.querySelectorAll('#loc-filters .sf-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  filterLoc = e.target.dataset.loc;
+document.getElementById('loc-filters').addEventListener('click', function(e) {
+  var btn = e.target.closest('.sf-btn');
+  if (!btn) return;
+  document.querySelectorAll('#loc-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  filterLoc = btn.dataset.loc;
   renderProducts();
 });
 
-window.CMM_RERENDER = function(lang) { renderProducts(); };
+document.getElementById('list-product-btn').addEventListener('click', function() {
+  CMM.openSellerModal();
+});
+
+window.CMM_RERENDER = function() { renderProducts(); };
+
+// Run on load
 renderProducts();
 </script>
 </body>
 </html>
-
