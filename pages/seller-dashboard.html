@@ -194,25 +194,12 @@
       <!-- TAB: Inquiries -->
       <div class="dash-panel" id="tab-inquiries">
         <div class="dash-card">
-          <div class="dash-section-title"><span>Customer Inquiries</span></div>
-          <div id="inquiries-container">
-            <table class="inq-table" id="inq-table" style="display:none">
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Product / Subject</th>
-                  <th>Message</th>
-                  <th>Date</th>
-                  <th>Reply</th>
-                </tr>
-              </thead>
-              <tbody id="inq-tbody"></tbody>
-            </table>
-            <div class="empty-state" id="inquiries-empty" style="display:none">
-              <div class="ei">💬</div>
-              <p style="font-weight:600; margin-bottom:6px">No inquiries yet</p>
-              <p style="font-size:0.85rem">When buyers contact you about products, they'll appear here.</p>
-            </div>
+          <div class="dash-section-title"><span>Customer Inquiries</span><span id="inq-count-label" style="font-size:0.8rem;color:var(--text-muted)"></span></div>
+          <div id="inquiries-list"></div>
+          <div class="empty-state" id="inquiries-empty" style="display:none">
+            <div class="ei">&#x1F4EC;</div>
+            <p style="font-weight:600;margin-bottom:6px">No inquiries yet</p>
+            <p style="font-size:0.85rem">When buyers enquire about your products, messages will appear here.</p>
           </div>
         </div>
       </div>
@@ -486,42 +473,115 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
 
 // ── Inquiries ─────────────────────────────────
 function renderInquiries() {
-  const inqs  = Store.getSellerInquiries(currentSeller.id);
-  const table = document.getElementById('inq-table');
-  const empty = document.getElementById('inquiries-empty');
-  const tbody = document.getElementById('inq-tbody');
-  while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+  var inqs  = Store.getSellerInquiries(currentSeller.id);
+  var list  = document.getElementById('inquiries-list');
+  var empty = document.getElementById('inquiries-empty');
+  var label = document.getElementById('inq-count-label');
+  while (list.firstChild) list.removeChild(list.firstChild);
 
-  if (!inqs.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
+  var newCount = inqs.filter(function(i){ return i.status === 'new' || i.status === 'buyer-replied'; }).length;
+  label.textContent = inqs.length + ' total' + (newCount ? ' · ' + newCount + ' need reply' : '');
+
+  if (!inqs.length) { empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  table.style.display = 'table';
 
   inqs.slice().reverse().forEach(function(inq) {
-    const tr = document.createElement('tr');
-    const date = inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('en-IN') : '—';
-    const tdName = document.createElement('td');
-    tdName.innerHTML = '<strong>' + (inq.name||'—') + '</strong><br><span style="color:var(--text-muted);font-size:0.78rem">' + (inq.email||'') + '</span>';
-    const tdProd = document.createElement('td');
-    tdProd.style.color = 'var(--teal)';
-    tdProd.textContent = inq.productName || inq.subject || '—';
-    const tdMsg = document.createElement('td');
-    tdMsg.style.cssText = 'max-width:220px; color:var(--text-secondary); font-size:0.85rem';
-    tdMsg.textContent = inq.message || '—';
-    const tdDate = document.createElement('td');
-    tdDate.style.cssText = 'white-space:nowrap; color:var(--text-muted); font-size:0.8rem';
-    tdDate.textContent = date;
-    const tdReply = document.createElement('td');
-    if (inq.phone) {
-      const wa = document.createElement('a');
-      wa.href = 'https://wa.me/' + inq.phone.replace(/\D/g,'');
-      wa.target = '_blank';
-      wa.className = 'btn btn-whatsapp btn-sm';
-      wa.textContent = '💬';
-      wa.style.cssText = 'padding:6px 10px; font-size:0.8rem';
-      tdReply.appendChild(wa);
-    } else { tdReply.textContent = '—'; }
-    tr.appendChild(tdName); tr.appendChild(tdProd); tr.appendChild(tdMsg); tr.appendChild(tdDate); tr.appendChild(tdReply);
-    tbody.appendChild(tr);
+    var needsReply = inq.status === 'new' || inq.status === 'buyer-replied';
+    var statusColor = needsReply ? 'var(--rose)' : 'var(--teal)';
+    var statusText  = inq.status === 'replied' ? '&#x2713; Replied' : inq.status === 'buyer-replied' ? '&#x1F4AC; New reply from buyer' : '&#x1F534; New';
+
+    var card = document.createElement('div');
+    card.style.cssText = 'background:var(--bg-card);border:1px solid ' + (needsReply ? 'rgba(255,107,138,0.3)' : 'var(--border)') + ';border-radius:14px;padding:20px;margin-bottom:14px;transition:all .3s';
+
+    // Header row
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px';
+    hdr.innerHTML =
+      '<div><div style="font-weight:700;font-size:0.95rem">' + (inq.buyerName || inq.name || 'Anonymous') + '</div>' +
+      '<div style="font-size:0.78rem;color:var(--text-muted)">' +
+      (inq.buyerEmail || inq.email ? '&#x2709; ' + (inq.buyerEmail || inq.email) + ' &nbsp;' : '') +
+      (inq.buyerPhone || inq.phone ? '&#x1F4DE; ' + (inq.buyerPhone || inq.phone) : '') + '</div></div>' +
+      '<div style="display:flex;gap:8px;align-items:center">' +
+      '<span style="font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,0.3);color:' + statusColor + '">' + statusText + '</span>' +
+      '<span style="font-size:0.72rem;color:var(--text-muted)">' + (inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('en-IN') : '') + '</span></div>';
+
+    // Product badge
+    var prodBadge = document.createElement('div');
+    prodBadge.style.cssText = 'display:inline-block;padding:4px 12px;background:rgba(0,191,165,0.1);border:1px solid rgba(0,191,165,0.25);border-radius:999px;font-size:0.78rem;color:var(--teal);margin-bottom:12px';
+    prodBadge.textContent = '&#x1F6D2; ' + (inq.productName || inq.subject || 'General Inquiry');
+
+    // Conversation thread
+    var thread = document.createElement('div');
+    thread.style.cssText = 'background:var(--bg-secondary);border-radius:10px;padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px';
+
+    // Buyer's original message
+    var buyerMsg = document.createElement('div');
+    buyerMsg.style.cssText = 'display:flex;gap:10px;align-items:flex-start';
+    buyerMsg.innerHTML =
+      '<div style="width:32px;height:32px;border-radius:50%;background:var(--grad-purple);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0">' +
+      (inq.buyerName || inq.name || 'B').charAt(0).toUpperCase() + '</div>' +
+      '<div style="flex:1"><div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px">Buyer &middot; ' + (inq.createdAt ? new Date(inq.createdAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '') + '</div>' +
+      '<div style="font-size:0.9rem;line-height:1.5;background:rgba(255,255,255,0.04);padding:10px 12px;border-radius:0 10px 10px 10px;border:1px solid var(--border)">' + (inq.message || '—') + '</div></div>';
+    thread.appendChild(buyerMsg);
+
+    // Replies
+    (inq.replies || []).forEach(function(r) {
+      var rDiv = document.createElement('div');
+      rDiv.style.cssText = 'display:flex;gap:10px;align-items:flex-start' + (r.fromSeller ? ';flex-direction:row-reverse' : '');
+      var rColor = r.fromSeller ? 'var(--grad-gold)' : 'var(--grad-purple)';
+      rDiv.innerHTML =
+        '<div style="width:32px;height:32px;border-radius:50%;background:' + rColor + ';display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;color:#000">' +
+        (r.fromName || (r.fromSeller ? 'S' : 'B')).charAt(0).toUpperCase() + '</div>' +
+        '<div style="flex:1"><div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px;' + (r.fromSeller ? 'text-align:right' : '') + '">' +
+        (r.fromSeller ? '&#x1F3EA; You' : '&#x1F464; ' + (r.fromName || 'Buyer')) + ' &middot; ' + (r.createdAt ? new Date(r.createdAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '') + '</div>' +
+        '<div style="font-size:0.9rem;line-height:1.5;padding:10px 12px;border-radius:' + (r.fromSeller ? '10px 0 10px 10px' : '0 10px 10px 10px') + ';background:' + (r.fromSeller ? 'rgba(249,168,37,0.1);border:1px solid rgba(249,168,37,0.25)' : 'rgba(255,255,255,0.04);border:1px solid var(--border)') + '">' + r.text + '</div></div>';
+      thread.appendChild(rDiv);
+    });
+
+    // Reply area
+    var replyWrap = document.createElement('div');
+    replyWrap.style.cssText = 'display:flex;gap:10px;align-items:flex-end';
+    var replyTA = document.createElement('textarea');
+    replyTA.placeholder = 'Type your reply to the buyer...';
+    replyTA.rows = 2;
+    replyTA.style.cssText = 'flex:1;padding:10px 14px;background:var(--bg-secondary);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:0.88rem;outline:none;resize:none;font-family:inherit;transition:border-color .2s';
+    replyTA.addEventListener('focus', function(){ this.style.borderColor='var(--gold)'; });
+    replyTA.addEventListener('blur', function(){ this.style.borderColor='var(--border)'; });
+    var replyBtn = document.createElement('button');
+    replyBtn.className = 'btn btn-primary btn-sm';
+    replyBtn.style.cssText = 'flex-shrink:0;padding:10px 18px;white-space:nowrap';
+    replyBtn.textContent = '&#x2709;&#xFE0F; Send Reply';
+    replyBtn.addEventListener('click', (function(inqId, ta) {
+      return function() {
+        var text = ta.value.trim();
+        if (!text) { ta.style.borderColor='var(--rose)'; return; }
+        Store.replyToInquiry(inqId, text, currentSeller.businessName || currentSeller.fullName);
+        renderInquiries();
+        CMM.showToast('Reply sent!', '&#x2705;');
+      };
+    })(inq.id, replyTA));
+    replyWrap.appendChild(replyTA);
+    replyWrap.appendChild(replyBtn);
+
+    // WA button
+    var waPhone = (inq.buyerPhone || inq.phone || '').replace(/\D/g, '');
+    var actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:8px;margin-top:10px;flex-wrap:wrap';
+    if (waPhone) {
+      var waBtn = document.createElement('a');
+      waBtn.href = 'https://wa.me/' + waPhone;
+      waBtn.target = '_blank';
+      waBtn.className = 'btn btn-whatsapp btn-sm';
+      waBtn.innerHTML = '&#x1F4AC; WhatsApp Buyer';
+      actions.appendChild(waBtn);
+    }
+
+    card.appendChild(hdr);
+    card.appendChild(prodBadge);
+    card.appendChild(thread);
+    card.appendChild(replyWrap);
+    card.appendChild(actions);
+    list.appendChild(card);
   });
 }
 

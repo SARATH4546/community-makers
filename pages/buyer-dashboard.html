@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Enquiries - Community Makers Market</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .buyer-hero{padding:calc(var(--nav-height) + 56px) 0 40px;background:linear-gradient(180deg,rgba(0,191,165,0.08) 0%,transparent 100%);text-align:center}
+    .login-card{max-width:440px;margin:0 auto 48px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px}
+    .inq-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;transition:all .3s}
+    .inq-card.has-reply{border-color:rgba(0,191,165,0.3)}
+    .bubble{font-size:0.9rem;line-height:1.55;padding:10px 14px;border-radius:0 10px 10px 10px;border:1px solid var(--border);background:rgba(255,255,255,0.04)}
+    .bubble.seller{border-radius:10px 0 10px 10px;background:rgba(0,191,165,0.08);border-color:rgba(0,191,165,0.25)}
+    .bubble.buyer-reply{border-radius:0 10px 10px 10px;background:rgba(249,168,37,0.06);border-color:rgba(249,168,37,0.2)}
+    .enq-inp{width:100%;padding:10px 14px;background:var(--bg-secondary);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color .2s;font-family:inherit}
+    .enq-inp:focus{border-color:var(--gold)}
+    .sbadge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:700}
+    .sbadge-replied{background:rgba(0,191,165,0.15);color:var(--teal)}
+    .sbadge-pending{background:rgba(255,107,138,0.15);color:var(--rose)}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="nav-inner">
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">&#x1F6CD;&#xFE0F;</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="marketplace.html" class="nav-link">Marketplace</a>
+    <a href="buyer-dashboard.html" class="nav-link active">My Enquiries</a>
+  </div>
+  <div class="nav-actions">
+    <button class="lang-toggle">&#x1F310; <span class="lang-text">తెలుగు</span></button>
+    <a href="marketplace.html" class="btn btn-primary btn-sm">&#x1F6D2; Browse</a>
+  </div>
+  <button class="hamburger"><span></span><span></span><span></span></button>
+</div></nav>
+<div class="mobile-menu">
+  <a href="../index.html">&#x1F3E0; Home</a>
+  <a href="marketplace.html">&#x1F6D2; Marketplace</a>
+  <a href="buyer-dashboard.html">&#x1F4EC; My Enquiries</a>
+</div>
+
+<div class="buyer-hero"><div class="container">
+  <div class="section-eyebrow">Buyer Portal</div>
+  <h1 class="section-title">My <span class="text-gradient-teal">Enquiries</span></h1>
+  <p class="section-desc">Track your product enquiries and read seller replies.</p>
+</div></div>
+
+<section class="section" style="padding-top:0" id="login-section"><div class="container">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:2.5rem;margin-bottom:10px">&#x1F4EC;</div>
+      <h2 style="font-size:1.3rem;margin-bottom:6px">Find Your Enquiries</h2>
+      <p style="color:var(--text-secondary);font-size:0.88rem">Enter the email you used when sending enquiries</p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <input type="email" id="buyer-email-input" class="enq-inp" placeholder="yourname@email.com" style="flex:1" />
+      <button id="buyer-login-btn" class="btn btn-primary" style="flex-shrink:0;padding:10px 20px">Find &#x2192;</button>
+    </div>
+    <div id="login-error" style="display:none;margin-top:10px;color:var(--rose);font-size:0.83rem"></div>
+  </div>
+</div></section>
+
+<section class="section" style="padding-top:0;display:none" id="enquiries-section"><div class="container" style="max-width:760px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <div>
+      <h2 style="font-size:1.3rem;font-weight:800" id="buyer-greeting">Your Enquiries</h2>
+      <p style="color:var(--text-secondary);font-size:0.85rem" id="enq-summary"></p>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a href="marketplace.html" class="btn btn-ghost btn-sm">&#x1F6D2; Browse More</a>
+      <button id="logout-btn" class="btn btn-ghost btn-sm" style="color:var(--rose)">&#x2715; Change Email</button>
+    </div>
+  </div>
+  <div id="buyer-inq-list"></div>
+  <div id="buyer-empty" style="display:none;text-align:center;padding:48px 0">
+    <div style="font-size:3rem;margin-bottom:16px">&#x1F4ED;</div>
+    <h3 style="font-size:1.1rem;margin-bottom:8px">No enquiries found</h3>
+    <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:20px">No enquiries found for this email address.</p>
+    <a href="marketplace.html" class="btn btn-primary">Browse Products &amp; Enquire</a>
+  </div>
+</div></section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>&#x00A9; 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)">&#x2190; Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+var currentBuyerEmail = '';
+var currentBuyerName  = '';
+
+var savedEmail = localStorage.getItem('cmm-buyer-email');
+var savedName  = localStorage.getItem('cmm-buyer-name') || '';
+if (savedEmail) { document.getElementById('buyer-email-input').value = savedEmail; loadEnquiries(savedEmail, savedName); }
+
+document.getElementById('buyer-login-btn').addEventListener('click', function() {
+  var email = document.getElementById('buyer-email-input').value.trim();
+  var errEl = document.getElementById('login-error');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.style.display='block'; errEl.textContent='Please enter a valid email address.'; return; }
+  errEl.style.display = 'none';
+  localStorage.setItem('cmm-buyer-email', email);
+  loadEnquiries(email, '');
+});
+document.getElementById('buyer-email-input').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('buyer-login-btn').click(); });
+document.getElementById('logout-btn').addEventListener('click', function() {
+  localStorage.removeItem('cmm-buyer-email'); localStorage.removeItem('cmm-buyer-name');
+  document.getElementById('enquiries-section').style.display = 'none';
+  document.getElementById('login-section').style.display = 'block';
+  document.getElementById('buyer-email-input').value = '';
+});
+
+function loadEnquiries(email, name) {
+  currentBuyerEmail = email; currentBuyerName = name;
+  var inqs = Store.getInquiriesByBuyer(email);
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('enquiries-section').style.display = 'block';
+  document.getElementById('buyer-greeting').textContent = name ? 'Hi, ' + name + '!' : 'Your Enquiries';
+  var repCount = inqs.filter(function(i){ return (i.replies||[]).some(function(r){ return r.fromSeller; }); }).length;
+  document.getElementById('enq-summary').textContent = inqs.length + ' total enquiries \u00b7 ' + repCount + ' with seller replies';
+
+  var list = document.getElementById('buyer-inq-list');
+  var empty = document.getElementById('buyer-empty');
+  while (list.firstChild) list.removeChild(list.firstChild);
+  if (!inqs.length) { empty.style.display='block'; return; }
+  empty.style.display = 'none';
+
+  inqs.slice().reverse().forEach(function(inq) {
+    var sellerReplies = (inq.replies||[]).filter(function(r){ return r.fromSeller; });
+    var hasReply = sellerReplies.length > 0;
+
+    var card = document.createElement('div');
+    card.className = 'inq-card ' + (hasReply ? 'has-reply' : '');
+
+    var badgeHtml = hasReply
+      ? '<span class="sbadge sbadge-replied">&#x2713; Seller Replied</span>'
+      : '<span class="sbadge sbadge-pending">&#x23F3; Awaiting Reply</span>';
+
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px';
+    hdr.innerHTML =
+      '<div><div style="font-weight:700;font-size:0.98rem;color:var(--teal)">' + (inq.productName||inq.subject||'General Inquiry') + '</div>' +
+      '<div style="font-size:0.78rem;color:var(--text-muted)">' + (inq.sellerName ? '&#x1F3EA; ' + inq.sellerName + ' &nbsp;&middot;&nbsp; ' : '') + 'Enquired ' + new Date(inq.createdAt).toLocaleDateString('en-IN') + '</div></div>' +
+      '<div>' + badgeHtml + '</div>';
+
+    var thread = document.createElement('div');
+    thread.style.cssText = 'background:var(--bg-secondary);border-radius:10px;padding:14px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px';
+
+    var bInit = document.createElement('div');
+    bInit.style.cssText = 'display:flex;gap:10px;align-items:flex-start';
+    var initials = (name || email || 'B').charAt(0).toUpperCase();
+    bInit.innerHTML =
+      '<div style="width:32px;height:32px;border-radius:50%;background:var(--grad-purple);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0">' + initials + '</div>' +
+      '<div style="flex:1"><div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px">You &middot; ' + new Date(inq.createdAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>' +
+      '<div class="bubble">' + (inq.message||'') + '</div></div>';
+    thread.appendChild(bInit);
+
+    (inq.replies||[]).forEach(function(r) {
+      var rDiv = document.createElement('div');
+      rDiv.style.cssText = 'display:flex;gap:10px;align-items:flex-start' + (r.fromSeller ? '' : ';flex-direction:row-reverse');
+      var rColor = r.fromSeller ? 'var(--grad-teal)' : 'var(--grad-purple)';
+      var bubCls = r.fromSeller ? 'bubble seller' : 'bubble buyer-reply';
+      rDiv.innerHTML =
+        '<div style="width:32px;height:32px;border-radius:50%;background:' + rColor + ';display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0">' +
+        (r.fromName||'?').charAt(0).toUpperCase() + '</div>' +
+        '<div style="flex:1"><div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px' + (r.fromSeller?'':';text-align:right') + '">' +
+        (r.fromSeller ? '&#x1F3EA; ' + (r.fromName||'Seller') : '&#x1F464; You') + ' &middot; ' + new Date(r.createdAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) + '</div>' +
+        '<div class="' + bubCls + '">' + r.text + '</div></div>';
+      thread.appendChild(rDiv);
+    });
+
+    var replyWrap = document.createElement('div');
+    replyWrap.style.cssText = 'display:flex;gap:10px;align-items:flex-end';
+    var ta = document.createElement('textarea');
+    ta.placeholder = 'Send a follow-up message...';
+    ta.rows = 2;
+    ta.style.cssText = 'flex:1;padding:10px 14px;background:var(--bg-secondary);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:0.88rem;outline:none;resize:none;font-family:inherit;transition:border-color .2s';
+    ta.addEventListener('focus',function(){ this.style.borderColor='var(--gold)'; });
+    ta.addEventListener('blur',function(){ this.style.borderColor='var(--border)'; });
+    var sendBtn = document.createElement('button');
+    sendBtn.className = 'btn btn-primary btn-sm';
+    sendBtn.style.cssText = 'flex-shrink:0;padding:10px 16px;white-space:nowrap';
+    sendBtn.textContent = 'Reply';
+    sendBtn.addEventListener('click', (function(inqId, textarea) {
+      return function() {
+        var text = textarea.value.trim();
+        if (!text) { textarea.style.borderColor='var(--rose)'; return; }
+        Store.replyToInquiryAsBuyer(inqId, text, name || email);
+        loadEnquiries(email, name);
+      };
+    })(inq.id, ta));
+    replyWrap.appendChild(ta); replyWrap.appendChild(sendBtn);
+
+    card.appendChild(hdr); card.appendChild(thread); card.appendChild(replyWrap);
+    list.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>

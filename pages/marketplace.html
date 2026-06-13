@@ -164,6 +164,42 @@
   </div>
 </div>
 
+
+<!-- ENQUIRY MODAL -->
+<div class="modal-overlay" id="enquiry-modal" style="overflow-y:auto;align-items:flex-start">
+  <div class="modal" style="max-width:500px;padding:32px;max-height:calc(100dvh - 40px);overflow-y:auto;margin:auto">
+    <button class="modal-close" id="enquiry-close">&#x2715;</button>
+    <div style="margin-bottom:20px">
+      <div style="font-size:1.6rem;margin-bottom:8px">&#x2709;&#xFE0F;</div>
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:4px" id="enq-title">Send Enquiry</h2>
+      <p style="font-size:0.85rem;color:var(--text-secondary)">The seller will reply to your inquiry directly.</p>
+    </div>
+    <div id="enq-product-strip" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(249,168,37,0.06);border:1px solid rgba(249,168,37,0.2);border-radius:12px;margin-bottom:20px">
+      <span id="enq-product-emoji" style="font-size:2rem">&#x1F4E6;</span>
+      <div><div style="font-weight:700;font-size:0.92rem" id="enq-product-name">Product</div>
+      <div style="font-size:0.78rem;color:var(--text-muted)" id="enq-seller-name">Seller</div></div>
+    </div>
+    <form id="enquiry-form" novalidate style="display:flex;flex-direction:column;gap:14px">
+      <input type="hidden" id="enq-product-id" /><input type="hidden" id="enq-seller-id" /><input type="hidden" id="enq-product-src" /><input type="hidden" id="enq-product-phone" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="enq-lbl">Your Name *</label><input id="enq-name" type="text" placeholder="Full name" class="enq-inp" /></div>
+        <div><label class="enq-lbl">Phone *</label><input id="enq-phone" type="tel" placeholder="10-digit" class="enq-inp" /></div>
+      </div>
+      <div><label class="enq-lbl">Email * <span style="font-weight:400;text-transform:none;font-size:0.72rem">(to track replies)</span></label><input id="enq-email" type="email" placeholder="yourname@email.com" class="enq-inp" /></div>
+      <div><label class="enq-lbl">Your Message *</label><textarea id="enq-message" rows="4" placeholder="Ask about price, availability, delivery..." class="enq-inp" style="resize:vertical"></textarea></div>
+      <div id="enq-error" style="display:none;color:#FF6B8A;font-size:0.82rem;padding:8px 12px;background:rgba(255,107,138,0.08);border-radius:8px"></div>
+      <button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,#F9A825,#FF6F00);color:#000;font-weight:800;font-size:1rem;border:none;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .3s">&#x2709;&#xFE0F; Send Enquiry</button>
+      <p style="text-align:center;font-size:0.78rem;color:var(--text-muted)">Track replies: <a href="buyer-dashboard.html" style="color:var(--gold)">My Enquiries &#x2192;</a></p>
+    </form>
+    <div id="enq-success" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:3rem;margin-bottom:12px">&#x1F389;</div>
+      <h3 style="font-size:1.2rem;margin-bottom:8px">Enquiry Sent!</h3>
+      <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:16px">Seller will reply soon. Track at:</p>
+      <a href="buyer-dashboard.html" style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#F9A825,#FF6F00);color:#000;font-weight:700;border-radius:999px;font-size:0.9rem">&#x1F4EC; My Enquiries Dashboard</a>
+    </div>
+  </div>
+</div>
+<style>.enq-lbl{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:5px}.enq-inp{width:100%;padding:10px 14px;background:var(--bg-secondary);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:0.9rem;outline:none;box-sizing:border-box;transition:border-color .2s;font-family:inherit}.enq-inp:focus{border-color:var(--gold)}</style>
 <a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
 <footer class="footer"><div class="container"><div class="footer-bottom"><span data-i18n="footer.copy">© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)" data-i18n="footer.back">← Back to Home</a></span></div></div></footer>
 
@@ -322,6 +358,12 @@ function renderProducts() {
     bb.textContent = String.fromCodePoint(0x1F4AC)+' '+buyLbl;
 
     br.appendChild(vb); br.appendChild(bb);
+    var eb = document.createElement('button');
+    eb.className = 'btn btn-primary btn-sm';
+    eb.dataset.action = 'enquire';
+    eb.style.cssText = 'grid-column:1/-1;background:rgba(249,168,37,0.12);color:var(--gold);border:1px solid rgba(249,168,37,0.3)';
+    eb.textContent = String.fromCodePoint(0x2709) + String.fromCodePoint(0xFE0F) + ' Enquire about this product';
+    br.appendChild(eb);
     body.appendChild(nm); body.appendChild(sl); body.appendChild(rt);
     body.appendChild(pr); body.appendChild(br);
     card.appendChild(imgDiv); card.appendChild(body);
@@ -345,6 +387,9 @@ document.getElementById('products-grid').addEventListener('click', function(e) {
   }
   if (act === 'seller' && src === 'seed') {
     showSeller(parseInt(pid,10)); return;
+  }
+    if (act === 'enquire') {
+    openEnquiry(pid, src); return;
   }
   if (act === 'buy') {
     if (src === 'seller') {
@@ -460,6 +505,96 @@ var _cs=Store.getCurrentSeller();
 if(_cs){ var _nb=document.getElementById('nav-sell-btn'); if(_nb){_nb.textContent='My Dashboard';_nb.href='seller-dashboard.html';} }
 
 window.CMM_RERENDER=function(){renderProducts();};
+
+// ── Enquiry Modal Logic ──────────────────────────────────────
+var _currentEnqProduct = null;
+
+function openEnquiry(pid, src) {
+  var p = null;
+  if (src === 'seller') {
+    var sp = Store.getAllProducts().find(function(x){ return x.id === pid; });
+    if (sp) {
+      var sel = Store.getSeller(sp.sellerId);
+      p = { id: sp.id, src: 'seller', name: sp.name, sellerName: sel ? (sel.businessName || sel.fullName) : 'Seller', sellerId: sp.sellerId, phone: sel ? sel.phone : '', emoji: String.fromCodePoint(0x1F4E6) };
+    }
+  } else {
+    var seed = CMM_DATA.products.find(function(x){ return String(x.id) === String(pid); });
+    if (seed) p = { id: seed.id, src: 'seed', name: seed.name, sellerName: seed.seller, sellerId: seed.seller, phone: seed.sellerPhone, emoji: seed.emoji || String.fromCodePoint(0x1F4E6) };
+  }
+  if (!p) return;
+  _currentEnqProduct = p;
+  document.getElementById('enq-product-name').textContent = p.name;
+  document.getElementById('enq-seller-name').textContent = 'by ' + p.sellerName;
+  document.getElementById('enq-product-emoji').textContent = p.emoji;
+  document.getElementById('enq-product-id').value = p.id;
+  document.getElementById('enq-seller-id').value = p.sellerId;
+  document.getElementById('enq-product-src').value = p.src;
+  document.getElementById('enq-product-phone').value = p.phone || '';
+  document.getElementById('enq-title').textContent = 'Enquire about ' + p.name;
+  document.getElementById('enquiry-form').style.display = 'flex';
+  document.getElementById('enq-success').style.display = 'none';
+  document.getElementById('enq-error').style.display = 'none';
+  document.getElementById('enq-name').value = '';
+  document.getElementById('enq-phone').value = '';
+  document.getElementById('enq-email').value = '';
+  document.getElementById('enq-message').value = '';
+  document.getElementById('enquiry-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('enquiry-close').addEventListener('click', function() {
+  document.getElementById('enquiry-modal').classList.remove('open');
+  document.body.style.overflow = '';
+});
+document.getElementById('enquiry-modal').addEventListener('click', function(e) {
+  if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
+});
+
+document.getElementById('enquiry-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var name    = document.getElementById('enq-name').value.trim();
+  var phone   = document.getElementById('enq-phone').value.trim();
+  var email   = document.getElementById('enq-email').value.trim();
+  var message = document.getElementById('enq-message').value.trim();
+  var errEl   = document.getElementById('enq-error');
+
+  if (!name || !phone || !email || !message) {
+    errEl.style.display = 'block'; errEl.textContent = 'Please fill in all required fields.'; return;
+  }
+  if (!/^\d{10}$/.test(phone.replace(/\s/g,''))) {
+    errEl.style.display = 'block'; errEl.textContent = 'Enter a valid 10-digit phone number.'; return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.style.display = 'block'; errEl.textContent = 'Enter a valid email address.'; return;
+  }
+  errEl.style.display = 'none';
+
+  var p = _currentEnqProduct;
+  Store.addInquiry({
+    productId:    String(p.id),
+    productName:  p.name,
+    productSrc:   p.src,
+    sellerId:     p.sellerId,
+    sellerName:   p.sellerName,
+    buyerName:    name,
+    buyerPhone:   phone,
+    buyerEmail:   email,
+    // legacy fields for compatibility
+    name:         name,
+    phone:        phone,
+    email:        email,
+    message:      message,
+    subject:      p.name,
+  });
+
+  // Save buyer email for dashboard auto-login
+  localStorage.setItem('cmm-buyer-email', email);
+  localStorage.setItem('cmm-buyer-name', name);
+
+  document.getElementById('enquiry-form').style.display = 'none';
+  document.getElementById('enq-success').style.display = 'block';
+});
+
 renderProducts();
 </script>
 </body>

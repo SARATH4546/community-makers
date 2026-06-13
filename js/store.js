@@ -112,13 +112,64 @@ var Store = (function() {
 
   function addInquiry(data) {
     var inquiries = getAllInquiries();
-    var inquiry = Object.assign({ id: uuid(), createdAt: new Date().toISOString() }, data);
+    var inquiry = Object.assign({
+      id: uuid(),
+      createdAt: new Date().toISOString(),
+      status: 'new',
+      replies: [],
+    }, data);
     inquiries.push(inquiry);
     save(KEYS.inquiries, inquiries);
     return inquiry;
   }
 
-  // ── Public API ────────────────────────────
+  function replyToInquiry(id, text, fromName) {
+    var inquiries = getAllInquiries();
+    var idx = inquiries.findIndex(function(i){ return i.id === id; });
+    if (idx < 0) return null;
+    if (!inquiries[idx].replies) inquiries[idx].replies = [];
+    inquiries[idx].replies.push({
+      text: text,
+      fromSeller: true,
+      fromName: fromName || 'Seller',
+      createdAt: new Date().toISOString(),
+    });
+    inquiries[idx].status = 'replied';
+    save(KEYS.inquiries, inquiries);
+    return inquiries[idx];
+  }
+
+  function replyToInquiryAsBuyer(id, text, buyerName) {
+    var inquiries = getAllInquiries();
+    var idx = inquiries.findIndex(function(i){ return i.id === id; });
+    if (idx < 0) return null;
+    if (!inquiries[idx].replies) inquiries[idx].replies = [];
+    inquiries[idx].replies.push({
+      text: text,
+      fromSeller: false,
+      fromName: buyerName || 'Buyer',
+      createdAt: new Date().toISOString(),
+    });
+    inquiries[idx].status = 'buyer-replied';
+    save(KEYS.inquiries, inquiries);
+    return inquiries[idx];
+  }
+
+  function getInquiriesByBuyer(email) {
+    if (!email) return [];
+    return getAllInquiries().filter(function(i){
+      return (i.buyerEmail || i.email || '').toLowerCase() === email.toLowerCase();
+    });
+  }
+
+  function markInquiryRead(id) {
+    var inquiries = getAllInquiries();
+    var idx = inquiries.findIndex(function(i){ return i.id === id; });
+    if (idx < 0) return;
+    if (inquiries[idx].status === 'new') inquiries[idx].status = 'read';
+    save(KEYS.inquiries, inquiries);
+  }
+
   return {
     uuid: uuid,
     // lang
@@ -140,5 +191,9 @@ var Store = (function() {
     getAllInquiries: getAllInquiries,
     getSellerInquiries: getSellerInquiries,
     addInquiry: addInquiry,
+    replyToInquiry: replyToInquiry,
+    replyToInquiryAsBuyer: replyToInquiryAsBuyer,
+    getInquiriesByBuyer: getInquiriesByBuyer,
+    markInquiryRead: markInquiryRead,
   };
 })();
