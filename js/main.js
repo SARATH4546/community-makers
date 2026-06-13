@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Language Gate (first visit) ──
   if (typeof Store !== 'undefined' && !Store.isLangChosen()) {
     showLangGate();
+  } else {
+    // Failsafe: ensure scroll is never locked if gate is absent
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 
   // ── Conditional Sell/Dashboard nav button ──
@@ -465,12 +469,14 @@ function showLangGate() {
   function chooseLang(lang) {
     if (typeof Store !== 'undefined') { Store.setLang(lang); Store.markLangChosen(); }
     localStorage.setItem('cmm-lang', lang);
+    // Restore scroll IMMEDIATELY before animation
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     gate.style.animation = 'fadeOut 0.3s ease forwards';
     setTimeout(() => {
-      gate.remove();
-      document.body.style.overflow = '';
-      applyLang(lang, false);
+      if (gate.parentNode) gate.remove();
     }, 300);
+    applyLang(lang, false);
   }
 
   document.getElementById('gate-en').addEventListener('click', () => chooseLang('en'));

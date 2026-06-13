@@ -54,7 +54,7 @@
 /* ── RESET ──────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; font-size: 16px; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-y: auto; }
 
 body {
   font-family: var(--font-body);
@@ -63,6 +63,7 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 img { max-width: 100%; display: block; }
