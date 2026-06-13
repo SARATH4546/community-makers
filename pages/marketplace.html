@@ -172,7 +172,6 @@
 <script src="../js/store.js"></script>
 <script src="../js/main.js"></script>
 <script>
-<script>
 'use strict';
 
 // ── Build unified product list (seed + seller) ─────────────────
@@ -202,7 +201,7 @@ function getAllMergedProducts() {
   var seedProds = (CMM_DATA.products || []).map(function(p) {
     return Object.assign({}, p, {
       _isSeller: false,
-      priceDisplay: '\u20B9' + (p.price || 0).toLocaleString('en-IN'),
+      priceDisplay: '₹' + (p.price || 0).toLocaleString('en-IN'),
     });
   });
   return sellerProds.concat(seedProds);
@@ -307,8 +306,8 @@ function renderProducts() {
       pr.appendChild(ps);
     } else {
       var disc2 = p.originalPrice ? Math.round((1-p.price/p.originalPrice)*100) : 0;
-      pr.innerHTML = '<span class="price-current">\u20B9'+p.price.toLocaleString('en-IN')+'</span>' +
-        (p.originalPrice ? '<span class="price-original">\u20B9'+p.originalPrice.toLocaleString('en-IN')+'</span><span class="price-discount">'+disc2+'% '+offLbl+'</span>' : '');
+      pr.innerHTML = '<span class="price-current">₹'+p.price.toLocaleString('en-IN')+'</span>' +
+        (p.originalPrice ? '<span class="price-original">₹'+p.originalPrice.toLocaleString('en-IN')+'</span><span class="price-discount">'+disc2+'% '+offLbl+'</span>' : '');
     }
 
     var br = document.createElement('div');
@@ -383,8 +382,8 @@ function showProduct(pid) {
     '<h2 style="font-size:1.3rem;margin-bottom:8px">'+p.name+'</h2>'+
     '<div style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:12px">'+String.fromCodePoint(0x1F3EA)+' '+p.seller+' &nbsp;&middot;&nbsp; '+String.fromCodePoint(0x1F4CD)+' '+p.location+'</div>'+
     '<div style="color:var(--gold);font-size:0.9rem;margin-bottom:12px">'+getStars(p.rating)+' '+p.rating+' ('+p.reviews+' reviews)</div>'+
-    '<div style="font-size:1.8rem;font-weight:800;color:var(--gold);margin-bottom:4px">\u20B9'+p.price.toLocaleString('en-IN')+'</div>'+
-    (p.originalPrice?'<div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px"><s>\u20B9'+p.originalPrice.toLocaleString('en-IN')+'</s> &nbsp; <span class="badge badge-green">'+disc+'% off</span></div>':'')+
+    '<div style="font-size:1.8rem;font-weight:800;color:var(--gold);margin-bottom:4px">₹'+p.price.toLocaleString('en-IN')+'</div>'+
+    (p.originalPrice?'<div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px"><s>₹'+p.originalPrice.toLocaleString('en-IN')+'</s> &nbsp; <span class="badge badge-green">'+disc+'% off</span></div>':'')+
     '<p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;line-height:1.6">'+p.desc+'</p>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">'+
     (p.tags||[]).map(function(t){ return '<span class="badge badge-muted">'+t+'</span>'; }).join('')+'</div>';
@@ -418,7 +417,7 @@ function showSeller(pid) {
     th.style.cssText='width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--bg-secondary)';
     th.textContent=sp.emoji;
     var inf=document.createElement('div'); inf.style.flex='1';
-    inf.innerHTML='<div style="font-weight:600;font-size:0.88rem">'+sp.name+'</div><div style="color:var(--teal);font-size:0.8rem">\u20B9'+sp.price.toLocaleString('en-IN')+'</div>';
+    inf.innerHTML='<div style="font-weight:600;font-size:0.88rem">'+sp.name+'</div><div style="color:var(--teal);font-size:0.8rem">₹'+sp.price.toLocaleString('en-IN')+'</div>';
     var wb=document.createElement('button'); wb.className='btn btn-whatsapp btn-sm'; wb.textContent=String.fromCodePoint(0x1F4AC);
     (function(s){wb.addEventListener('click',function(){CMM.openWhatsApp(s.sellerPhone,s.name,s.seller,s.price);});})(sp);
     r.appendChild(th);r.appendChild(inf);r.appendChild(wb);el.appendChild(r);
@@ -433,7 +432,7 @@ function showSeller(pid) {
 // ── Price slider ──────────────────────────────────────────────
 function updatePrice(val) {
   maxPrice = parseInt(val,10);
-  document.getElementById('price-label').textContent = '\u20B9'+maxPrice.toLocaleString('en-IN');
+  document.getElementById('price-label').textContent = '₹'+maxPrice.toLocaleString('en-IN');
   renderProducts();
 }
 
