@@ -603,6 +603,9 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 700; lin
   z-index: 2000;
   place-items: center;
   padding: 20px;
+  /* Allow overlay itself to scroll when modal is taller than viewport */
+  overflow-y: auto;
+  align-items: flex-start;
 }
 
 .modal-overlay.open { display: grid; }
@@ -616,6 +619,10 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 700; lin
   width: 100%;
   position: relative;
   animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Scroll inside modal if content overflows viewport height */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  margin: auto;
 }
 
 @keyframes modalIn {

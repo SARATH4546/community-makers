@@ -255,7 +255,7 @@ function initSellerForm() {
   modal.id = 'seller-reg-modal';
   modal.className = 'modal-overlay';
   modal.innerHTML = `
-    <div class="modal" style="max-width:560px;padding:0;overflow:hidden;border-radius:var(--radius-xl)">
+    <div class="modal" style="max-width:560px;padding:0;overflow-y:auto;border-radius:var(--radius-xl);max-height:calc(100dvh - 40px)">
       <div style="background:linear-gradient(135deg,rgba(249,168,37,0.12),rgba(156,39,176,0.10));padding:32px 36px 24px;border-bottom:1px solid var(--border)">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
