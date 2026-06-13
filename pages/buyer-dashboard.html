@@ -182,7 +182,7 @@ function loadEnquiries(email, name) {
     var sendBtn = document.createElement('button');
     sendBtn.className = 'btn btn-primary btn-sm';
     sendBtn.style.cssText = 'flex-shrink:0;padding:10px 16px;white-space:nowrap';
-    sendBtn.textContent = 'Reply';
+    sendBtn.innerHTML = '&#x2709;&#xFE0F; Reply';
     sendBtn.addEventListener('click', (function(inqId, textarea) {
       return function() {
         var text = textarea.value.trim();
