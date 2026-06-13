@@ -379,23 +379,41 @@ function initSellerForm() {
     }
     errEl.style.display = 'none';
 
-    // Save to localStorage
-    const profile = { name, phone, biz, cat, loc, desc, registeredAt: new Date().toISOString() };
-    localStorage.setItem('cmm-seller-profile', JSON.stringify(profile));
-    localStorage.setItem('cmm-user-role', 'seller');
+    // ── Save seller via Store (creates session that persists across all pages) ──
+    const seller = Store.addSeller({
+      fullName:     name,
+      phone:        phone,
+      businessName: biz,
+      category:     cat,
+      location:     loc,
+      description:  desc,
+    });
+    Store.setCurrentSeller(seller);
 
-    // Show success then redirect
+    // ── Save uploaded photo as their first product listing ──
+    const photoImg = document.getElementById('sf-photo-img');
+    const photoSrc = (photoImg && photoImg.style.display !== 'none' && photoImg.src && photoImg.src.startsWith('data:')) ? photoImg.src : '';
+    Store.addProduct({
+      sellerId:    seller.id,
+      name:        biz,
+      category:    cat,
+      price:       'Contact for price',
+      description: desc,
+      image:       photoSrc,
+    });
+
+    // Show success then redirect to NEW dashboard
     modal.classList.remove('open');
-    showToast(`Welcome, ${name}! Your seller profile is ready. 🎉`, '✅', 4000);
+    showToast('Welcome, ' + name + '! Your seller profile is ready. 🎉', '✅', 4000);
     setTimeout(() => {
       const base = window.location.pathname.includes('/pages/') ? '' : 'pages/';
-      window.location.href = base + 'dashboard.html';
+      window.location.href = base + 'seller-dashboard.html';
     }, 1500);
   });
 
-  // Wire up all "Start Selling" CTAs
+  // Only wire up inline CTA buttons (not the navbar link — it navigates via href)
   document.addEventListener('click', ev => {
-    const el = ev.target.closest('[data-i18n="nav.cta"], .btn-start-selling');
+    const el = ev.target.closest('.btn-start-selling');
     if (el) {
       ev.preventDefault();
       openSellerModal();
@@ -404,7 +422,13 @@ function initSellerForm() {
 }
 
 function openSellerModal() {
-  // Pre-fill if profile exists
+  // If already logged in via Store, go straight to dashboard
+  if (typeof Store !== 'undefined' && Store.getCurrentSeller()) {
+    const base = window.location.pathname.includes('/pages/') ? '' : 'pages/';
+    window.location.href = base + 'seller-dashboard.html';
+    return;
+  }
+  // Pre-fill from legacy profile if it exists
   const saved = localStorage.getItem('cmm-seller-profile');
   if (saved) {
     try {

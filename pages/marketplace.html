@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -172,457 +172,295 @@
 <script src="../js/store.js"></script>
 <script src="../js/main.js"></script>
 <script>
+<script>
 'use strict';
-var filterCat  = 'all';
-var filterLoc  = 'all';
-var filterSort = 'default';
-var maxPrice   = 5000;
 
-function getStars(r) {
-  var full = Math.floor(r);
-  var half = (r - full) >= 0.5 ? '½' : '';
-  return '★'.repeat(full) + half + '☆'.repeat(5 - Math.ceil(r));
+// ── Build unified product list (seed + seller) ─────────────────
+function getAllMergedProducts() {
+  var sellerProds = Store.getAllProducts().map(function(sp) {
+    var seller = Store.getSeller(sp.sellerId);
+    var numPrice = parseFloat((sp.price || '').replace(/[^0-9.]/g, ''));
+    var hasNum = !isNaN(numPrice) && numPrice > 0;
+    return {
+      _isSeller: true,
+      id: sp.id,
+      name: sp.name || (seller ? seller.businessName : 'Product'),
+      seller: seller ? (seller.businessName || seller.fullName) : 'Local Seller',
+      sellerPhone: seller ? (seller.phone || '') : '',
+      price: hasNum ? numPrice : 0,
+      priceDisplay: sp.price || 'Contact for price',
+      originalPrice: null,
+      category: sp.category || '',
+      rating: 0, reviews: 0,
+      image: sp.image || '',
+      emoji: String.fromCodePoint(0x1F4E6),
+      tags: [],
+      desc: sp.description || '',
+      location: seller ? (seller.location || '') : '',
+    };
+  });
+  var seedProds = (CMM_DATA.products || []).map(function(p) {
+    return Object.assign({}, p, {
+      _isSeller: false,
+      priceDisplay: '\u20B9' + (p.price || 0).toLocaleString('en-IN'),
+    });
+  });
+  return sellerProds.concat(seedProds);
 }
 
-// ── Main render function ──────────────────────
-function renderProducts() {
-  var grid  = document.getElementById('products-grid');
-  var noP   = document.getElementById('no-products');
-  var count = document.getElementById('product-count');
+function getStars(r) {
+  if (!r) return '\u2606\u2606\u2606\u2606\u2606';
+  var f = Math.floor(r);
+  return '\u2605'.repeat(f) + ((r-f)>=0.5?'\u00BD':'') + '\u2606'.repeat(5-Math.ceil(r));
+}
 
-  // Filter
-  var products = CMM_DATA.products.filter(function(p) {
-    var catOk   = filterCat === 'all' || p.category === filterCat;
+var filterCat = 'all', filterLoc = 'all', filterSort = 'default', maxPrice = 5000;
+
+function renderProducts() {
+  var grid = document.getElementById('products-grid');
+  var noP  = document.getElementById('no-products');
+  var count = document.getElementById('product-count');
+  var all = getAllMergedProducts();
+
+  var products = all.filter(function(p) {
+    var catOk   = filterCat === 'all' || p.category === filterCat || p.category.toLowerCase() === filterCat.toLowerCase();
     var locOk   = filterLoc === 'all' || p.location === filterLoc;
-    var priceOk = p.price <= maxPrice;
+    var priceOk = p.price === 0 || p.price <= maxPrice;
     return catOk && locOk && priceOk;
   });
 
-  // Sort
   if (filterSort === 'price-asc')  products.sort(function(a,b){ return a.price - b.price; });
   if (filterSort === 'price-desc') products.sort(function(a,b){ return b.price - a.price; });
-  if (filterSort === 'rating')     products.sort(function(a,b){ return b.rating - a.rating; });
+  if (filterSort === 'rating')     products.sort(function(a,b){ return (b.rating||0)-(a.rating||0); });
 
   var lang = CMM.currentLang();
-  count.textContent = products.length + (lang === 'te' ? ' ఉత్పత్తులు కనుగొనబడ్డాయి' : ' products found');
+  count.textContent = products.length + (lang==='te' ? ' ' + String.fromCodePoint(0xC09) + String.fromCodePoint(0xC24) + String.fromCodePoint(0xC4D) + String.fromCodePoint(0xC2A) + String.fromCodePoint(0xC24) + String.fromCodePoint(0xC4D) + String.fromCodePoint(0xC24) + String.fromCodePoint(0xC41) + String.fromCodePoint(0xC32) + String.fromCodePoint(0xC41) + ' ' + String.fromCodePoint(0xC15) + String.fromCodePoint(0xC28) + String.fromCodePoint(0xC41) + String.fromCodePoint(0xC17) + String.fromCodePoint(0xC4A) + String.fromCodePoint(0xC28) + String.fromCodePoint(0xC2C) + String.fromCodePoint(0xC21) + String.fromCodePoint(0xC4D) + String.fromCodePoint(0xC21) + String.fromCodePoint(0xC3E) + String.fromCodePoint(0xC2F) + String.fromCodePoint(0xC3F) : ' products found');
 
-  // Clear grid safely
   while (grid.firstChild) grid.removeChild(grid.firstChild);
-
-  if (!products.length) { noP.style.display = 'block'; return; }
+  if (!products.length) { noP.style.display='block'; return; }
   noP.style.display = 'none';
 
-  var inStockLabel = CMM.t('badge.in.stock');
-  var buyLabel     = CMM.t('btn.buy.whatsapp');
-  var viewLabel    = CMM.t('btn.view.details');
-  var offLabel     = CMM.t('market.off');
-  var reviewsLabel = CMM.t('market.reviews');
+  var inStock  = CMM.t('badge.in.stock') || 'In Stock';
+  var buyLbl   = CMM.t('btn.buy.whatsapp') || 'WhatsApp';
+  var viewLbl  = CMM.t('btn.view.details') || 'Details';
+  var offLbl   = CMM.t('market.off') || 'off';
+  var revLbl   = CMM.t('market.reviews') || 'reviews';
 
   products.forEach(function(p) {
-    var disc   = Math.round((1 - p.price / p.originalPrice) * 100);
-    var imgSrc = CMM.imgPath(p.image);
+    var imgSrc = p._isSeller ? p.image : CMM.imgPath(p.image);
 
-    // ── Card container ──
     var card = document.createElement('div');
     card.className = 'product-card';
     card.dataset.pid = String(p.id);
+    card.dataset.src = p._isSeller ? 'seller' : 'seed';
 
-    // ── Image area ──
     var imgDiv = document.createElement('div');
     imgDiv.className = 'product-image';
-    imgDiv.style.cursor = 'pointer';
-    imgDiv.style.overflow = 'hidden';
+    imgDiv.style.cssText = 'cursor:pointer;overflow:hidden;position:relative';
     imgDiv.dataset.action = 'view';
 
     if (imgSrc) {
       var img = document.createElement('img');
-      img.src = imgSrc;
-      img.alt = p.name;
+      img.src = imgSrc; img.alt = p.name;
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
-      var fallback = document.createElement('span');
-      fallback.textContent = p.emoji;
-      fallback.style.cssText = 'display:none;font-size:4rem;position:absolute;inset:0;align-items:center;justify-content:center';
-      img.onerror = function() {
-        img.style.display = 'none';
-        fallback.style.display = 'flex';
-      };
-      imgDiv.appendChild(img);
-      imgDiv.appendChild(fallback);
+      var emFb = document.createElement('span');
+      emFb.textContent = p.emoji || String.fromCodePoint(0x1F4E6);
+      emFb.style.cssText = 'display:none;position:absolute;inset:0;font-size:4rem;align-items:center;justify-content:center;background:var(--bg-card)';
+      img.onerror = function(){ img.style.display='none'; emFb.style.display='flex'; };
+      imgDiv.appendChild(img); imgDiv.appendChild(emFb);
     } else {
       var em = document.createElement('span');
-      em.textContent = p.emoji;
-      em.style.fontSize = '4rem';
+      em.textContent = p.emoji || String.fromCodePoint(0x1F4E6);
+      em.style.cssText = 'font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%';
       imgDiv.appendChild(em);
     }
 
-    var badge = document.createElement('span');
-    badge.className = 'product-badge badge badge-green';
-    badge.textContent = inStockLabel;
-    imgDiv.appendChild(badge);
+    var bdg = document.createElement('span');
+    bdg.className = 'product-badge badge ' + (p._isSeller ? 'badge-gold' : 'badge-green');
+    bdg.textContent = p._isSeller ? String.fromCodePoint(0x1F195)+' New' : inStock;
+    imgDiv.appendChild(bdg);
 
-    // ── Body ──
     var body = document.createElement('div');
     body.className = 'product-body';
 
-    var nameEl = document.createElement('div');
-    nameEl.className = 'product-name';
-    nameEl.style.cursor = 'pointer';
-    nameEl.dataset.action = 'view';
-    nameEl.textContent = p.name;
+    var nm = document.createElement('div');
+    nm.className = 'product-name'; nm.style.cursor='pointer'; nm.dataset.action='view';
+    nm.textContent = p.name;
 
-    var sellerEl = document.createElement('div');
-    sellerEl.className = 'product-seller';
-    sellerEl.style.cursor = 'pointer';
-    sellerEl.dataset.action = 'seller';
-    sellerEl.textContent = '🏪 ' + p.seller + ' · 📍 ' + p.location;
+    var sl = document.createElement('div');
+    sl.className = 'product-seller'; sl.style.cursor='pointer'; sl.dataset.action='seller';
+    sl.textContent = String.fromCodePoint(0x1F3EA)+' '+p.seller+(p.location?' · '+String.fromCodePoint(0x1F4CD)+' '+p.location:'');
 
-    var ratingEl = document.createElement('div');
-    ratingEl.className = 'product-rating';
-    ratingEl.innerHTML = '<span class="stars">' + getStars(p.rating) + '</span> ' + p.rating + ' (' + p.reviews + ' ' + reviewsLabel + ')';
+    var rt = document.createElement('div');
+    rt.className = 'product-rating';
+    if (p.rating) {
+      rt.innerHTML = '<span class="stars">'+getStars(p.rating)+'</span> '+p.rating+' ('+p.reviews+' '+revLbl+')';
+    } else if (p._isSeller) {
+      rt.innerHTML = '<span style="color:var(--text-muted);font-size:0.78rem">'+String.fromCodePoint(0x2728)+' New listing</span>';
+    }
 
-    var priceRow = document.createElement('div');
-    priceRow.className = 'product-price-row';
-    priceRow.innerHTML =
-      '<span class="price-current">₹' + p.price.toLocaleString('en-IN') + '</span>' +
-      '<span class="price-original">₹' + p.originalPrice.toLocaleString('en-IN') + '</span>' +
-      '<span class="price-discount">' + disc + '% ' + offLabel + '</span>';
+    var pr = document.createElement('div');
+    pr.className = 'product-price-row';
+    if (p._isSeller) {
+      var ps = document.createElement('span');
+      ps.className = 'price-current'; ps.textContent = p.priceDisplay;
+      pr.appendChild(ps);
+    } else {
+      var disc2 = p.originalPrice ? Math.round((1-p.price/p.originalPrice)*100) : 0;
+      pr.innerHTML = '<span class="price-current">\u20B9'+p.price.toLocaleString('en-IN')+'</span>' +
+        (p.originalPrice ? '<span class="price-original">\u20B9'+p.originalPrice.toLocaleString('en-IN')+'</span><span class="price-discount">'+disc2+'% '+offLbl+'</span>' : '');
+    }
 
-    var btnRow = document.createElement('div');
-    btnRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px';
+    var br = document.createElement('div');
+    br.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px';
 
-    var viewBtn = document.createElement('button');
-    viewBtn.className = 'btn btn-ghost btn-sm';
-    viewBtn.dataset.action = 'view';
-    viewBtn.textContent = viewLabel;
+    var vb = document.createElement('button');
+    vb.className = 'btn btn-ghost btn-sm'; vb.dataset.action='view';
+    vb.textContent = String.fromCodePoint(0x1F50D)+' '+viewLbl;
 
-    var buyBtn = document.createElement('button');
-    buyBtn.className = 'btn btn-whatsapp btn-sm';
-    buyBtn.dataset.action = 'buy';
-    buyBtn.textContent = '💬 ' + buyLabel;
+    var bb = document.createElement('button');
+    bb.className = 'btn btn-whatsapp btn-sm'; bb.dataset.action='buy';
+    bb.textContent = String.fromCodePoint(0x1F4AC)+' '+buyLbl;
 
-    btnRow.appendChild(viewBtn);
-    btnRow.appendChild(buyBtn);
-
-    body.appendChild(nameEl);
-    body.appendChild(sellerEl);
-    body.appendChild(ratingEl);
-    body.appendChild(priceRow);
-    body.appendChild(btnRow);
-
-    card.appendChild(imgDiv);
-    card.appendChild(body);
+    br.appendChild(vb); br.appendChild(bb);
+    body.appendChild(nm); body.appendChild(sl); body.appendChild(rt);
+    body.appendChild(pr); body.appendChild(br);
+    card.appendChild(imgDiv); card.appendChild(body);
     grid.appendChild(card);
   });
 }
 
-// ── Event delegation — one listener handles all card clicks ──
+// ── Event delegation ──────────────────────────────────────────
 document.getElementById('products-grid').addEventListener('click', function(e) {
   var card = e.target.closest('.product-card');
   if (!card) return;
-  var pid = parseInt(card.dataset.pid, 10);
-  var actionEl = e.target.closest('[data-action]');
-  if (!actionEl) return;
-  var action = actionEl.dataset.action;
-  if (action === 'view')   { showProduct(pid); return; }
-  if (action === 'seller') { showSeller(pid);  return; }
-  if (action === 'buy') {
-    var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
-    if (p) CMM.openWhatsApp(p.sellerPhone, p.name, p.seller, p.price);
+  var pid  = card.dataset.pid;
+  var src  = card.dataset.src;
+  var ae   = e.target.closest('[data-action]');
+  if (!ae) return;
+  var act  = ae.dataset.action;
+
+  if (act === 'view') {
+    window.location.href = 'product.html?id='+encodeURIComponent(pid)+'&src='+src;
+    return;
+  }
+  if (act === 'seller' && src === 'seed') {
+    showSeller(parseInt(pid,10)); return;
+  }
+  if (act === 'buy') {
+    if (src === 'seller') {
+      var sp = Store.getAllProducts().find(function(p){ return p.id===pid; });
+      if (sp) {
+        var sel = Store.getSeller(sp.sellerId);
+        CMM.openWhatsApp((sel?sel.phone:'').replace(/\D/g,''), sp.name, sel?(sel.businessName||sel.fullName):'Seller', sp.price||'');
+      }
+    } else {
+      var p2 = CMM_DATA.products.find(function(x){ return String(x.id)===pid; });
+      if (p2) CMM.openWhatsApp(p2.sellerPhone, p2.name, p2.seller, p2.price);
+    }
   }
 });
 
-// ── Product detail modal ──
+// ── Product detail modal (seed only) ──────────────────────────
 function showProduct(pid) {
-  var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
+  var p = CMM_DATA.products.find(function(x){ return x.id===pid; });
   if (!p) return;
-  var disc   = Math.round((1 - p.price / p.originalPrice) * 100);
+  var disc = p.originalPrice ? Math.round((1-p.price/p.originalPrice)*100) : 0;
   var imgSrc = CMM.imgPath(p.image);
-
-  var content = document.getElementById('product-modal-content');
-  // Clear
-  while (content.firstChild) content.removeChild(content.firstChild);
-
-  var layout = document.createElement('div');
-  layout.className = 'pd-layout';
-
-  // Left: image
-  var imgWrap = document.createElement('div');
+  var el = document.getElementById('product-modal-content');
+  while (el.firstChild) el.removeChild(el.firstChild);
+  var layout = document.createElement('div'); layout.className = 'pd-layout';
+  var imgWrap = document.createElement('div'); imgWrap.className = 'pd-image';
   if (imgSrc) {
-    imgWrap.style.cssText = 'height:220px;border-radius:var(--radius-lg);overflow:hidden;background:linear-gradient(135deg,rgba(0,191,165,0.08),rgba(249,168,37,0.08))';
-    var mImg = document.createElement('img');
-    mImg.src = imgSrc;
-    mImg.alt = p.name;
-    mImg.style.cssText = 'width:100%;height:100%;object-fit:cover';
-    var mFallback = document.createElement('div');
-    mFallback.className = 'pd-image';
-    mFallback.textContent = p.emoji;
-    mFallback.style.display = 'none';
-    mImg.onerror = function() { mImg.style.display='none'; mFallback.style.display='grid'; };
-    imgWrap.appendChild(mImg);
-    imgWrap.appendChild(mFallback);
-  } else {
-    imgWrap.className = 'pd-image';
-    imgWrap.textContent = p.emoji;
-  }
-
-  // Right: details
-  var details = document.createElement('div');
-
-  var catBadge = document.createElement('div');
-  catBadge.className = 'section-eyebrow';
-  catBadge.style.marginBottom = '8px';
-  catBadge.textContent = p.category;
-
-  var title = document.createElement('h2');
-  title.style.cssText = 'font-size:1.3rem;margin-bottom:8px';
-  title.textContent = p.name;
-
-  var sellerInfo = document.createElement('div');
-  sellerInfo.style.cssText = 'color:var(--teal);font-size:0.85rem;margin-bottom:12px';
-  sellerInfo.textContent = 'by ' + p.seller + ' · 📍 ' + p.location;
-
-  var ratingDiv = document.createElement('div');
-  ratingDiv.className = 'product-rating';
-  ratingDiv.style.marginBottom = '14px';
-  ratingDiv.innerHTML = '<span class="stars">' + getStars(p.rating) + '</span> ' + p.rating + ' (' + p.reviews + ' reviews)';
-
-  var priceEl = document.createElement('div');
-  priceEl.style.cssText = 'font-size:1.4rem;font-weight:900;color:var(--gold);margin-bottom:4px';
-  priceEl.textContent = '₹' + p.price.toLocaleString('en-IN');
-
-  var origEl = document.createElement('div');
-  origEl.style.cssText = 'font-size:0.82rem;color:var(--text-muted);text-decoration:line-through;margin-bottom:16px';
-  origEl.textContent = '₹' + p.originalPrice.toLocaleString('en-IN') + ' (' + disc + '% off)';
-
-  var descEl = document.createElement('p');
-  descEl.style.cssText = 'font-size:0.88rem;color:var(--text-secondary);margin-bottom:16px';
-  descEl.textContent = p.desc;
-
-  var tagsDiv = document.createElement('div');
-  tagsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px';
-  (p.tags || []).forEach(function(t) {
-    var tag = document.createElement('span');
-    tag.className = 'badge badge-muted';
-    tag.textContent = t;
-    tagsDiv.appendChild(tag);
-  });
-
-  var note = document.createElement('div');
-  note.style.cssText = 'font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px';
-  note.textContent = "Click the WhatsApp button below to connect directly with the seller.";
-
-  var waBtn = document.createElement('button');
-  waBtn.className = 'btn btn-whatsapp btn-lg';
-  waBtn.style.width = '100%';
-  waBtn.textContent = '💬 Contact ' + p.seller + ' on WhatsApp';
-  waBtn.addEventListener('click', function() {
-    CMM.openWhatsApp(p.sellerPhone, p.name, p.seller, p.price);
-    CMM.showToast('Opening WhatsApp...', '💬');
-  });
-
-  details.appendChild(catBadge);
-  details.appendChild(title);
-  details.appendChild(sellerInfo);
-  details.appendChild(ratingDiv);
-  details.appendChild(priceEl);
-  details.appendChild(origEl);
-  details.appendChild(descEl);
-  details.appendChild(tagsDiv);
-  details.appendChild(note);
-  details.appendChild(waBtn);
-
-  layout.appendChild(imgWrap);
-  layout.appendChild(details);
-  content.appendChild(layout);
-
+    var ie = document.createElement('img'); ie.src=imgSrc; ie.alt=p.name;
+    ie.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg)';
+    ie.onerror=function(){ie.style.display='none';imgWrap.textContent=p.emoji;};
+    imgWrap.appendChild(ie);
+  } else { imgWrap.textContent=p.emoji; }
+  var det = document.createElement('div');
+  det.innerHTML =
+    '<div style="margin-bottom:8px"><span class="badge badge-teal">'+p.category+'</span></div>'+
+    '<h2 style="font-size:1.3rem;margin-bottom:8px">'+p.name+'</h2>'+
+    '<div style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:12px">'+String.fromCodePoint(0x1F3EA)+' '+p.seller+' &nbsp;&middot;&nbsp; '+String.fromCodePoint(0x1F4CD)+' '+p.location+'</div>'+
+    '<div style="color:var(--gold);font-size:0.9rem;margin-bottom:12px">'+getStars(p.rating)+' '+p.rating+' ('+p.reviews+' reviews)</div>'+
+    '<div style="font-size:1.8rem;font-weight:800;color:var(--gold);margin-bottom:4px">\u20B9'+p.price.toLocaleString('en-IN')+'</div>'+
+    (p.originalPrice?'<div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px"><s>\u20B9'+p.originalPrice.toLocaleString('en-IN')+'</s> &nbsp; <span class="badge badge-green">'+disc+'% off</span></div>':'')+
+    '<p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;line-height:1.6">'+p.desc+'</p>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">'+
+    (p.tags||[]).map(function(t){ return '<span class="badge badge-muted">'+t+'</span>'; }).join('')+'</div>';
+  var wab = document.createElement('button'); wab.className='btn btn-whatsapp btn-lg'; wab.style.width='100%';
+  wab.textContent=String.fromCodePoint(0x1F4AC)+' Contact '+p.seller+' on WhatsApp';
+  wab.addEventListener('click',function(){ CMM.openWhatsApp(p.sellerPhone,p.name,p.seller,p.price); CMM.showToast('Opening WhatsApp...', String.fromCodePoint(0x1F4AC)); });
+  det.appendChild(wab);
+  layout.appendChild(imgWrap); layout.appendChild(det); el.appendChild(layout);
   CMM.openModal('product-modal');
 }
 
-// ── Seller profile modal ──
+// ── Seller modal (seed products) ──────────────────────────────
 function showSeller(pid) {
-  var p = CMM_DATA.products.find(function(x){ return x.id === pid; });
+  var p = CMM_DATA.products.find(function(x){ return x.id===pid; });
   if (!p) return;
-  var sellerProducts = CMM_DATA.products.filter(function(x){ return x.seller === p.seller; });
-  var imgSrc = CMM.imgPath(p.image);
-
+  var sps = CMM_DATA.products.filter(function(x){ return x.seller===p.seller; });
   var el = document.getElementById('seller-modal-content');
   while (el.firstChild) el.removeChild(el.firstChild);
-
-  // Header
-  var header = document.createElement('div');
-  header.style.cssText = 'text-align:center;margin-bottom:24px';
-
-  var avatarWrap = document.createElement('div');
-  avatarWrap.style.cssText = 'width:72px;height:72px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:var(--grad-teal);font-size:2rem;margin-bottom:12px';
-  if (imgSrc) {
-    var avImg = document.createElement('img');
-    avImg.src = imgSrc;
-    avImg.alt = p.seller;
-    avImg.style.cssText = 'width:100%;height:100%;object-fit:cover';
-    avImg.onerror = function() { avatarWrap.textContent = p.emoji; };
-    avatarWrap.appendChild(avImg);
-  } else {
-    avatarWrap.textContent = p.emoji;
-  }
-
-  var sellerName = document.createElement('h2');
-  sellerName.style.fontSize = '1.3rem';
-  sellerName.textContent = p.seller;
-
-  var sellerLoc = document.createElement('div');
-  sellerLoc.style.cssText = 'color:var(--text-secondary);font-size:0.88rem;margin-top:4px';
-  sellerLoc.textContent = '📍 ' + p.location + ' · Verified Seller';
-
-  header.appendChild(avatarWrap);
-  header.appendChild(sellerName);
-  header.appendChild(sellerLoc);
-
-  var badges = document.createElement('div');
-  badges.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-bottom:24px';
-  badges.innerHTML = '<span class="badge badge-green">✓ Verified</span><span class="badge badge-teal">' + sellerProducts.length + ' Products</span>';
-
-  var productsTitle = document.createElement('h3');
-  productsTitle.style.cssText = 'font-size:0.9rem;margin-bottom:14px;color:var(--text-secondary)';
-  productsTitle.textContent = 'All Products by ' + p.seller;
-
-  var spList = document.createElement('div');
-  sellerProducts.forEach(function(sp) {
-    var spImgSrc = CMM.imgPath(sp.image);
-    var row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-card);border-radius:var(--radius-md);margin-bottom:10px;border:1px solid var(--border)';
-
-    var thumb = document.createElement('div');
-    thumb.style.cssText = 'width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:1.6rem';
-    if (spImgSrc) {
-      var spImgEl = document.createElement('img');
-      spImgEl.src = spImgSrc;
-      spImgEl.alt = sp.name;
-      spImgEl.style.cssText = 'width:100%;height:100%;object-fit:cover';
-      spImgEl.onerror = function() { thumb.textContent = sp.emoji; };
-      thumb.appendChild(spImgEl);
-    } else {
-      thumb.textContent = sp.emoji;
-    }
-
-    var info = document.createElement('div');
-    info.style.flex = '1';
-    var spName = document.createElement('div');
-    spName.style.cssText = 'font-weight:600;font-size:0.9rem';
-    spName.textContent = sp.name;
-    var spPrice = document.createElement('div');
-    spPrice.style.cssText = 'font-size:0.82rem;color:var(--teal)';
-    spPrice.textContent = '₹' + sp.price.toLocaleString('en-IN');
-    info.appendChild(spName);
-    info.appendChild(spPrice);
-
-    var spBtn = document.createElement('button');
-    spBtn.className = 'btn btn-whatsapp btn-sm';
-    spBtn.textContent = '💬';
-    (function(s){ spBtn.addEventListener('click', function(){ CMM.openWhatsApp(s.sellerPhone, s.name, s.seller, s.price); }); })(sp);
-
-    row.appendChild(thumb);
-    row.appendChild(info);
-    row.appendChild(spBtn);
-    spList.appendChild(row);
+  el.innerHTML =
+    '<div style="text-align:center;margin-bottom:20px">'+
+    '<div style="width:64px;height:64px;border-radius:50%;background:var(--grad-teal);display:inline-flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:10px">'+p.emoji+'</div>'+
+    '<h2 style="font-size:1.2rem">'+p.seller+'</h2>'+
+    '<div style="color:var(--text-secondary);font-size:0.85rem;margin-top:4px">'+String.fromCodePoint(0x1F4CD)+' '+p.location+' &middot; Verified</div></div>'+
+    '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px">'+
+    '<span class="badge badge-green">'+String.fromCodePoint(0x2713)+' Verified</span>'+
+    '<span class="badge badge-teal">'+sps.length+' Products</span></div>';
+  sps.forEach(function(sp) {
+    var r=document.createElement('div');
+    r.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card);border-radius:var(--radius-md);margin-bottom:8px;border:1px solid var(--border)';
+    var th=document.createElement('div');
+    th.style.cssText='width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--bg-secondary)';
+    th.textContent=sp.emoji;
+    var inf=document.createElement('div'); inf.style.flex='1';
+    inf.innerHTML='<div style="font-weight:600;font-size:0.88rem">'+sp.name+'</div><div style="color:var(--teal);font-size:0.8rem">\u20B9'+sp.price.toLocaleString('en-IN')+'</div>';
+    var wb=document.createElement('button'); wb.className='btn btn-whatsapp btn-sm'; wb.textContent=String.fromCodePoint(0x1F4AC);
+    (function(s){wb.addEventListener('click',function(){CMM.openWhatsApp(s.sellerPhone,s.name,s.seller,s.price);});})(sp);
+    r.appendChild(th);r.appendChild(inf);r.appendChild(wb);el.appendChild(r);
   });
-
-  var msgBtn = document.createElement('button');
-  msgBtn.className = 'btn btn-whatsapp';
-  msgBtn.style.cssText = 'width:100%;margin-top:16px';
-  msgBtn.textContent = '💬 Message ' + p.seller + ' on WhatsApp';
-  msgBtn.addEventListener('click', function(){ CMM.openWhatsApp(p.sellerPhone, '', p.seller, ''); });
-
-  el.appendChild(header);
-  el.appendChild(badges);
-  el.appendChild(productsTitle);
-  el.appendChild(spList);
-  el.appendChild(msgBtn);
-
+  var mb=document.createElement('button');mb.className='btn btn-whatsapp';mb.style.cssText='width:100%;margin-top:12px';
+  mb.textContent=String.fromCodePoint(0x1F4AC)+' Message '+p.seller;
+  mb.addEventListener('click',function(){CMM.openWhatsApp(p.sellerPhone,'',p.seller,'');});
+  el.appendChild(mb);
   CMM.openModal('seller-modal');
 }
 
-// ── Price slider ──
+// ── Price slider ──────────────────────────────────────────────
 function updatePrice(val) {
-  maxPrice = parseInt(val, 10);
-  document.getElementById('price-label').textContent = '₹' + maxPrice.toLocaleString('en-IN');
+  maxPrice = parseInt(val,10);
+  document.getElementById('price-label').textContent = '\u20B9'+maxPrice.toLocaleString('en-IN');
   renderProducts();
 }
 
-// ── Filter listeners ──
+// ── Filter listeners ──────────────────────────────────────────
 document.getElementById('cat-filters').addEventListener('click', function(e) {
-  var btn = e.target.closest('.sf-btn');
-  if (!btn) return;
-  document.querySelectorAll('#cat-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  filterCat = btn.dataset.cat;
-  renderProducts();
+  var b=e.target.closest('.sf-btn'); if(!b)return;
+  document.querySelectorAll('#cat-filters .sf-btn').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active'); filterCat=b.dataset.cat; renderProducts();
 });
-
 document.getElementById('sort-filters').addEventListener('click', function(e) {
-  var btn = e.target.closest('.sf-btn');
-  if (!btn) return;
-  document.querySelectorAll('#sort-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  filterSort = btn.dataset.sort;
-  renderProducts();
+  var b=e.target.closest('.sf-btn'); if(!b)return;
+  document.querySelectorAll('#sort-filters .sf-btn').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active'); filterSort=b.dataset.sort; renderProducts();
 });
-
 document.getElementById('loc-filters').addEventListener('click', function(e) {
-  var btn = e.target.closest('.sf-btn');
-  if (!btn) return;
-  document.querySelectorAll('#loc-filters .sf-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  filterLoc = btn.dataset.loc;
-  renderProducts();
+  var b=e.target.closest('.sf-btn'); if(!b)return;
+  document.querySelectorAll('#loc-filters .sf-btn').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active'); filterLoc=b.dataset.loc; renderProducts();
 });
 
-document.getElementById('list-product-btn').addEventListener('click', function() {
-  window.location.href = 'sell.html';
-});
+document.getElementById('list-product-btn').addEventListener('click',function(){ window.location.href='sell.html'; });
 
-// ── Conditional nav button ──
-var _cs = Store.getCurrentSeller();
-if (_cs) {
-  var _nb = document.getElementById('nav-sell-btn');
-  if (_nb) { _nb.textContent = 'My Dashboard'; _nb.href = 'seller-dashboard.html'; }
-}
+// ── Conditional nav ───────────────────────────────────────────
+var _cs=Store.getCurrentSeller();
+if(_cs){ var _nb=document.getElementById('nav-sell-btn'); if(_nb){_nb.textContent='My Dashboard';_nb.href='seller-dashboard.html';} }
 
-// ── Merge seller products with seed products ──
-var _origRender = renderProducts;
-renderProducts = function() {
-  var sellerProds = Store.getAllProducts();
-  // Convert seller products to a compatible shape
-  var converted = sellerProds.map(function(sp) {
-    var seller = Store.getSeller(sp.sellerId);
-    return {
-      _isSeller: true,
-      id: sp.id,
-      name: sp.name,
-      seller: seller ? (seller.businessName || seller.fullName) : 'Local Seller',
-      sellerPhone: seller ? seller.phone : '',
-      price: parseFloat((sp.price || '0').replace(/[^0-9.]/g, '')) || 0,
-      originalPrice: null,
-      category: (sp.category || '').toLowerCase().replace(/ & /g,'-').replace(/ /g,'-'),
-      rating: null,
-      reviews: 0,
-      image: sp.image || '',
-      emoji: '📦',
-      tags: [],
-      desc: sp.description || '',
-      location: seller ? seller.location : '',
-    };
-  });
-  // Temporarily extend CMM_DATA.products
-  var orig = CMM_DATA.products;
-  CMM_DATA.products = converted.concat(orig);
-  _origRender();
-  CMM_DATA.products = orig;
-};
-
-// ── Override product card to add View Details button ──
-window.CMM_RERENDER = function() { renderProducts(); };
-
-// Run on load
+window.CMM_RERENDER=function(){renderProducts();};
 renderProducts();
 </script>
 </body>
