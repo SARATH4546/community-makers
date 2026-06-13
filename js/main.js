@@ -1,4 +1,4 @@
-// =============================================
+﻿// =============================================
 //  COMMUNITY MAKERS' MARKET — MAIN JS (v2)
 // =============================================
 
@@ -7,7 +7,7 @@
 let currentLang = localStorage.getItem('cmm-lang') || 'en';
 let _langInitDone = false;
 
-// Resolve root-relative asset paths (data.js stores paths like "marketplace photos/...")
+// Resolve root-relative asset paths (data.js stores paths like "marketplace-photos/...")
 // Works correctly from both / (index.html) and /pages/ subpages
 const _isInPagesDir = window.location.pathname.includes('/pages/');
 function imgPath(rootRelPath) {
