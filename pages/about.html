@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — Community Makers' Market</title>
+  <meta name="description" content="Learn about Community Makers' Market — empowering homemakers, students, and artisans to build home-based businesses." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 72px) 0 72px; background: linear-gradient(135deg, rgba(249,168,37,0.08) 0%, rgba(0,191,165,0.06) 100%); text-align: center; }
+    .offer-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+    .offer-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center; transition: var(--transition); }
+    .offer-card:hover { transform: translateY(-4px); border-color: var(--border-hover); box-shadow: var(--shadow-card); }
+    .offer-icon { font-size: 2.2rem; margin-bottom: 14px; }
+    .offer-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+    .offer-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .mv-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; }
+    .mv-card h3 { font-size: 1.1rem; margin-bottom: 12px; }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; text-align: center; }
+    .stat-box { padding: 28px 16px; border-right: 1px solid var(--border); }
+    .stat-box:last-child { border-right: none; }
+    .stat-num { font-size: 2rem; font-weight: 800; display: block; }
+    .stat-lbl { font-size: 0.82rem; color: var(--text-secondary); }
+    .val-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .val-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+    @media(max-width:900px){ .offer-grid { grid-template-columns: repeat(2,1fr); } .stats-row { grid-template-columns: repeat(2,1fr); } .stat-box:nth-child(2){ border-right:none; } .val-grid { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:600px){ .offer-grid { grid-template-columns: 1fr 1fr; } .mv-grid { grid-template-columns: 1fr; } .val-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="ideas.html" class="nav-link">Business Ideas</a>
+      <a href="learn.html" class="nav-link">Learn</a>
+      <a href="marketplace.html" class="nav-link">Marketplace</a>
+      <a href="stories.html" class="nav-link">Stories</a>
+      <a href="schemes.html" class="nav-link">Schemes</a>
+      <a href="about.html" class="nav-link active">About</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="sell.html" class="btn btn-primary btn-sm" id="nav-sell-btn">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="learn.html">📚 Learn</a><a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a><a href="schemes.html">🏛️ Schemes</a><a href="about.html">ℹ️ About</a>
+</div>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Our Story</div>
+    <h1 class="section-title">Empowering Local Talent,<br><span class="text-gradient-gold">One Maker at a Time</span></h1>
+    <p class="section-desc" style="max-width:600px">Community Makers' Market is a free, bilingual platform built to help homemakers, students, artists, and self-help groups discover, learn, and build profitable home-based businesses.</p>
+  </div>
+</div>
+
+<!-- Mission & Vision -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Purpose</div>
+      <h2 class="section-title">Mission &amp; Vision</h2>
+    </div>
+    <div class="mv-grid reveal">
+      <div class="mv-card">
+        <div style="font-size:2rem; margin-bottom:14px">🎯</div>
+        <h3>Our Mission</h3>
+        <p style="color:var(--text-secondary); line-height:1.7">To provide every woman, student, and aspiring entrepreneur in Andhra Pradesh and Telangana with free access to business knowledge, a marketplace to sell, and direct connections with buyers — without any middleman or registration fees.</p>
+      </div>
+      <div class="mv-card">
+        <div style="font-size:2rem; margin-bottom:14px">🌟</div>
+        <h3>Our Vision</h3>
+        <p style="color:var(--text-secondary); line-height:1.7">A future where every household has at least one income-generating skill, where local artisans reach global buyers, and where community commerce drives rural economic growth — all powered by technology that speaks your language.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section style="padding: 0 0 64px">
+  <div class="container">
+    <div class="stats-row reveal">
+      <div class="stat-box"><span class="stat-num text-gradient-gold">1,500+</span><span class="stat-lbl">Registered Makers</span></div>
+      <div class="stat-box"><span class="stat-num text-gradient-teal">28+</span><span class="stat-lbl">Business Ideas</span></div>
+      <div class="stat-box"><span class="stat-num" style="background:var(--grad-purple);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">5+</span><span class="stat-lbl">Cities Covered</span></div>
+      <div class="stat-box"><span class="stat-num" style="color:#69F0AE">100%</span><span class="stat-lbl">Free Platform</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- What We Offer -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Features</div>
+      <h2 class="section-title">What We Offer</h2>
+    </div>
+    <div class="offer-grid">
+      <div class="offer-card reveal reveal-delay-1">
+        <div class="offer-icon">💡</div>
+        <div class="offer-title">Business Ideas Hub</div>
+        <div class="offer-desc">28+ curated home-based business ideas with investment costs, skill levels, and earning potential guides.</div>
+      </div>
+      <div class="offer-card reveal reveal-delay-2">
+        <div class="offer-icon">🛒</div>
+        <div class="offer-title">Community Marketplace</div>
+        <div class="offer-desc">Sell products directly to local buyers. No payment gateway — buyers contact you on WhatsApp.</div>
+      </div>
+      <div class="offer-card reveal reveal-delay-3">
+        <div class="offer-icon">📚</div>
+        <div class="offer-title">Learn &amp; Grow</div>
+        <div class="offer-desc">Video courses, guides, and downloadable resources to help you start, market, and scale your business.</div>
+      </div>
+      <div class="offer-card reveal reveal-delay-4">
+        <div class="offer-icon">🏛️</div>
+        <div class="offer-title">Government Schemes</div>
+        <div class="offer-desc">Discover PMEGP, Mudra Loans, Stree Nidhi, and other programs that can fund your business dreams.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section" style="padding-top:0; background: linear-gradient(180deg, transparent, rgba(249,168,37,0.04))">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Our Values</div>
+      <h2 class="section-title">What We Stand For</h2>
+    </div>
+    <div class="val-grid">
+      <div class="val-card reveal reveal-delay-1">
+        <div style="font-size:2rem; margin-bottom:12px">🤝</div>
+        <h3 style="margin-bottom:8px">Community First</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.7">Every feature is designed for real people in real communities — not investors or corporations. The platform exists for makers, by makers.</p>
+      </div>
+      <div class="val-card reveal reveal-delay-2">
+        <div style="font-size:2rem; margin-bottom:12px">🚪</div>
+        <h3 style="margin-bottom:8px">Zero Barriers</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.7">No registration fees. No commissions. No technical skills needed. If you have a skill and a phone, you can sell on CMM today.</p>
+      </div>
+      <div class="val-card reveal reveal-delay-3">
+        <div style="font-size:2rem; margin-bottom:12px">👩‍💼</div>
+        <h3 style="margin-bottom:8px">Women &amp; Youth First</h3>
+        <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.7">We specifically design for homemakers, SHG members, and young entrepreneurs who face systemic barriers in traditional markets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0; text-align:center">
+  <div class="container">
+    <div class="card reveal" style="max-width:600px; margin:0 auto; padding:48px 32px; background:linear-gradient(135deg,rgba(249,168,37,0.08),rgba(0,191,165,0.08))">
+      <div style="font-size:2.5rem; margin-bottom:16px">🚀</div>
+      <h2 style="font-size:1.6rem; margin-bottom:12px">Ready to Start?</h2>
+      <p style="color:var(--text-secondary); margin-bottom:28px">Join 1,500+ makers who are already building their home-based business on CMM.</p>
+      <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap">
+        <a href="ideas.html" class="btn btn-secondary">💡 Browse Ideas</a>
+        <a href="sell.html" class="btn btn-primary">🛒 Start Selling</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+const s = Store.getCurrentSeller();
+if (s) { const b = document.getElementById('nav-sell-btn'); if(b){ b.textContent='My Dashboard'; b.href='seller-dashboard.html'; } }
+</script>
+</body>
+</html>

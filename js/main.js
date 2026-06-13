@@ -25,6 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Apply translations only (skip CMM_RERENDER — page scripts call render on their own)
   applyLang(currentLang, true);
   _langInitDone = true;
+
+  // ── Language Gate (first visit) ──
+  if (typeof Store !== 'undefined' && !Store.isLangChosen()) {
+    showLangGate();
+  }
+
+  // ── Conditional Sell/Dashboard nav button ──
+  if (typeof Store !== 'undefined') {
+    const seller = Store.getCurrentSeller();
+    const sellBtn = document.getElementById('nav-sell-btn');
+    if (sellBtn) {
+      if (seller) {
+        sellBtn.textContent = 'My Dashboard';
+        sellBtn.href = 'seller-dashboard.html';
+      } else {
+        sellBtn.textContent = 'Start Selling';
+        sellBtn.href = 'sell.html';
+      }
+    }
+  }
 });
 
 // ── NAVBAR ──────────────────────────────────
@@ -410,6 +430,68 @@ function loadPhotoFile(file) {
   reader.readAsDataURL(file);
 }
 
+// ── LANGUAGE GATE ────────────────────────────
+function showLangGate() {
+  // Create overlay
+  const gate = document.createElement('div');
+  gate.id = 'lang-gate';
+  gate.style.cssText = [
+    'position:fixed','inset:0','z-index:9999','background:rgba(8,7,24,0.97)',
+    'display:grid','place-items:center','padding:24px',
+    'backdrop-filter:blur(12px)','animation:fadeIn 0.4s ease'
+  ].join(';');
+
+  gate.innerHTML = `
+    <div style="text-align:center;max-width:420px">
+      <div style="font-size:3.5rem;margin-bottom:16px">🛍️</div>
+      <h1 style="font-size:1.8rem;font-weight:800;margin-bottom:8px">Community Makers' Market</h1>
+      <p style="color:rgba(255,255,255,0.6);margin-bottom:36px;font-size:0.95rem">Choose your preferred language / మీకు ఇష్టమైన భాషను ఎంచుకోండి</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <button id="gate-en" style="padding:20px 16px;border-radius:16px;border:2px solid rgba(249,168,37,0.4);background:rgba(249,168,37,0.08);cursor:pointer;transition:all 0.2s;color:#fff;font-size:1rem;font-weight:700;font-family:inherit">
+          <div style="font-size:2rem;margin-bottom:8px">🇬🇧</div>
+          English
+        </button>
+        <button id="gate-te" style="padding:20px 16px;border-radius:16px;border:2px solid rgba(0,191,165,0.4);background:rgba(0,191,165,0.08);cursor:pointer;transition:all 0.2s;color:#fff;font-size:1rem;font-weight:700;font-family:inherit">
+          <div style="font-size:2rem;margin-bottom:8px">🇮🇳</div>
+          తెలుగు
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(gate);
+  document.body.style.overflow = 'hidden';
+
+  function chooseLang(lang) {
+    if (typeof Store !== 'undefined') { Store.setLang(lang); Store.markLangChosen(); }
+    localStorage.setItem('cmm-lang', lang);
+    gate.style.animation = 'fadeOut 0.3s ease forwards';
+    setTimeout(() => {
+      gate.remove();
+      document.body.style.overflow = '';
+      applyLang(lang, false);
+    }, 300);
+  }
+
+  document.getElementById('gate-en').addEventListener('click', () => chooseLang('en'));
+  document.getElementById('gate-te').addEventListener('click', () => chooseLang('te'));
+
+  // Hover effects
+  ['gate-en','gate-te'].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-4px)'; btn.style.boxShadow = '0 8px 24px rgba(0,0,0,0.4)'; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; btn.style.boxShadow = ''; });
+  });
+}
+
+// Add fadeOut keyframe if not present
+if (!document.querySelector('#cmm-gate-style')) {
+  const s = document.createElement('style');
+  s.id = 'cmm-gate-style';
+  s.textContent = '@keyframes fadeOut { to { opacity:0; } } @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }';
+  document.head.appendChild(s);
+}
+
 // Expose globals
 window.CMM = {
   openWhatsApp,
@@ -422,4 +504,5 @@ window.CMM = {
   observeNewRevealElements,
   openSellerModal,
   imgPath,
+  showLangGate,
 };

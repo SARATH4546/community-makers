@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — Community Makers' Market</title>
+  <meta name="description" content="Get in touch with Community Makers' Market. Ask questions, get support, or send us your feedback." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 52px; background: linear-gradient(180deg, rgba(0,191,165,0.07) 0%, transparent 100%); text-align: center; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 360px; gap: 28px; align-items: start; }
+    .contact-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .form-group label { font-size: 0.83rem; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group textarea {
+      background: #0d0b1e; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 11px 15px; color: var(--text-primary); font-size: 0.92rem; font-family: inherit; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--teal); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .submit-btn { width: 100%; padding: 14px; font-size: 0.95rem; font-weight: 700; background: var(--grad-teal); color: #000; border: none; border-radius: var(--radius-full); cursor: pointer; transition: var(--transition); font-family: var(--font-heading); }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,191,165,0.4); }
+    .success-msg { display: none; text-align: center; padding: 28px; }
+    .info-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .info-item:last-child { border-bottom: none; }
+    .info-icon { width: 38px; height: 38px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    /* FAQ */
+    .faq-item { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 10px; overflow: hidden; }
+    .faq-q { padding: 16px 20px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.92rem; background: var(--bg-card); user-select: none; }
+    .faq-q:hover { background: var(--bg-secondary, #0d0b1e); }
+    .faq-arrow { transition: transform 0.3s; font-size: 0.8rem; color: var(--text-muted); flex-shrink: 0; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+    .faq-item.open .faq-a { max-height: 240px; }
+    .faq-a-inner { padding: 0 20px 16px; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7; }
+    @media(max-width:860px){ .contact-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="ideas.html" class="nav-link">Business Ideas</a>
+      <a href="learn.html" class="nav-link">Learn</a>
+      <a href="marketplace.html" class="nav-link">Marketplace</a>
+      <a href="stories.html" class="nav-link">Stories</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link active">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="sell.html" class="btn btn-primary btn-sm" id="nav-sell-btn">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a><a href="about.html">ℹ️ About</a><a href="contact.html">📞 Contact</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">We'd Love to Hear From You</div>
+    <h1 class="section-title">Get in <span class="text-gradient-teal">Touch</span></h1>
+    <p class="section-desc">Have a question, suggestion, or just want to say hello? We're here to help.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- Form -->
+      <div class="contact-card">
+        <h2 style="font-size:1.2rem; margin-bottom:20px">Send Us a Message</h2>
+        <form id="contact-form" novalidate>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="cf-name" placeholder="Your name" /></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="cf-email" placeholder="you@example.com" /></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+            <div class="form-group"><label>Phone (optional)</label><input type="tel" id="cf-phone" placeholder="9876543210" /></div>
+            <div class="form-group"><label>Subject</label><input type="text" id="cf-subject" placeholder="e.g. Seller question" /></div>
+          </div>
+          <div class="form-group"><label>Message *</label><textarea id="cf-message" placeholder="Write your message here..."></textarea></div>
+          <p id="cf-error" style="color:#FF6B8A; font-size:0.82rem; margin-bottom:12px; display:none">Please fill in your name, email, and message.</p>
+          <button type="submit" class="submit-btn">Send Message 📨</button>
+        </form>
+        <div class="success-msg" id="cf-success">
+          <div style="font-size:3rem; margin-bottom:12px">✅</div>
+          <h3 style="margin-bottom:8px">Message Sent!</h3>
+          <p style="color:var(--text-secondary)">We'll get back to you shortly. You can also reach us on WhatsApp for a faster response.</p>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div>
+        <div class="contact-card" style="margin-bottom:20px">
+          <h2 style="font-size:1.1rem; margin-bottom:16px">Contact Info</h2>
+          <div class="info-item">
+            <div class="info-icon" style="background:rgba(37,211,102,0.12)">📱</div>
+            <div>
+              <div style="font-weight:600; font-size:0.9rem; margin-bottom:3px">WhatsApp</div>
+              <a href="https://wa.me/919000000000" target="_blank" style="color:var(--teal); font-size:0.85rem; text-decoration:none">+91 90000 00000</a>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon" style="background:rgba(0,191,165,0.12)">📧</div>
+            <div>
+              <div style="font-weight:600; font-size:0.9rem; margin-bottom:3px">Email</div>
+              <a href="mailto:contact@communitymakers.in" style="color:var(--teal); font-size:0.85rem; text-decoration:none">contact@communitymakers.in</a>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon" style="background:rgba(249,168,37,0.12)">📍</div>
+            <div>
+              <div style="font-weight:600; font-size:0.9rem; margin-bottom:3px">Location</div>
+              <span style="color:var(--text-secondary); font-size:0.85rem">Hyderabad, Telangana, India</span>
+            </div>
+          </div>
+          <div class="info-item" style="border-bottom:none">
+            <div class="info-icon" style="background:rgba(99,102,241,0.12)">🕐</div>
+            <div>
+              <div style="font-weight:600; font-size:0.9rem; margin-bottom:3px">Response Time</div>
+              <span style="color:var(--text-secondary); font-size:0.85rem">Usually within 24 hours</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact-card" style="text-align:center; padding:20px">
+          <div style="font-size:1.5rem; margin-bottom:10px">💬</div>
+          <div style="font-weight:600; margin-bottom:6px; font-size:0.9rem">Fast response on WhatsApp</div>
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:14px">For urgent queries, message us directly on WhatsApp</p>
+          <a href="https://wa.me/919000000000?text=Hi%20CMM%20Team!" target="_blank" class="btn btn-whatsapp btn-sm" style="display:inline-flex">💬 Chat on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="margin-top:48px">
+      <div class="section-header reveal" style="margin-bottom:28px">
+        <div class="section-eyebrow">Common Questions</div>
+        <h2 class="section-title" style="font-size:1.6rem">Frequently Asked Questions</h2>
+      </div>
+      <div id="faq-list" style="max-width:800px; margin:0 auto">
+        <!-- JS rendered -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+
+// Nav btn
+const s = Store.getCurrentSeller();
+if (s) { const b = document.getElementById('nav-sell-btn'); if(b){ b.textContent='My Dashboard'; b.href='seller-dashboard.html'; } }
+
+// Contact form
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name    = document.getElementById('cf-name').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const phone   = document.getElementById('cf-phone').value.trim();
+  const subject = document.getElementById('cf-subject').value.trim();
+  const message = document.getElementById('cf-message').value.trim();
+  const errEl   = document.getElementById('cf-error');
+
+  if (!name || !email || !message) { errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+
+  Store.addInquiry({ name, email, phone, subject, message });
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('cf-success').style.display = 'block';
+});
+
+// FAQ accordion
+const faqs = [
+  { q: 'How do I register as a seller?', a: 'Click "Start Selling" in the navigation bar, fill in the registration form (name, email, phone, location, business name, category, and description), and click "Join as Seller". You'll be automatically taken to your seller dashboard.' },
+  { q: 'Is there any registration fee?', a: 'No! Community Makers\' Market is completely free. There are no registration fees, no listing fees, and no commission on sales. The platform is a community service.' },
+  { q: 'How do buyers contact me?', a: 'When a buyer is interested in your product, they can click "Contact Seller" which opens a form. Their message is saved to your seller dashboard under "Customer Inquiries". You can also link your WhatsApp number so buyers can reach you directly.' },
+  { q: 'Can I list products in Telugu?', a: 'Yes! The platform is fully bilingual — English and Telugu. You can describe your products in either language. The platform UI also switches between English and Telugu using the language toggle in the navbar.' },
+  { q: 'What categories can I sell in?', a: 'We support 8 seller categories: Handmade Crafts, Homemade Food, Jewelry, Tailoring, Art & Paintings, Home Decor, Customized Gifts, and Plants & Gardening. If your business doesn\'t fit, choose the closest category.' },
+  { q: 'How many products can I list?', a: 'You can list as many products as you like. Each product can have a name, category, price, description, and an optional photo. Products appear immediately in the marketplace after you add them.' },
+];
+
+const faqList = document.getElementById('faq-list');
+faqs.forEach(function(faq, i) {
+  const item = document.createElement('div');
+  item.className = 'faq-item reveal';
+  item.style.setProperty('animation-delay', (i * 0.05) + 's');
+
+  const q = document.createElement('div');
+  q.className = 'faq-q';
+  const qText = document.createElement('span');
+  qText.textContent = faq.q;
+  const arrow = document.createElement('span');
+  arrow.className = 'faq-arrow';
+  arrow.textContent = '▼';
+  q.appendChild(qText);
+  q.appendChild(arrow);
+
+  const a = document.createElement('div');
+  a.className = 'faq-a';
+  const aInner = document.createElement('div');
+  aInner.className = 'faq-a-inner';
+  aInner.textContent = faq.a;
+  a.appendChild(aInner);
+
+  q.addEventListener('click', function() {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(el){ el.classList.remove('open'); });
+    if (!isOpen) item.classList.add('open');
+  });
+
+  item.appendChild(q);
+  item.appendChild(a);
+  faqList.appendChild(item);
+});
+</script>
+</body>
+</html>

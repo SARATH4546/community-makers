@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Detail — Community Makers' Market</title>
+  <meta name="description" content="View product details and contact the seller directly." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .pd-layout { display: grid; grid-template-columns: 420px 1fr; gap: 36px; align-items: start; padding-top: calc(var(--nav-height) + 36px); padding-bottom: 60px; }
+    .pd-img-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 6rem; position: sticky; top: calc(var(--nav-height) + 16px); }
+    .pd-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .pd-info { }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--teal); }
+    .pd-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 10px; line-height: 1.3; }
+    .pd-seller { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .pd-seller-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--grad-gold); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: #000; }
+    .pd-price { font-size: 2rem; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
+    .pd-orig { font-size: 1rem; color: var(--text-muted); text-decoration: line-through; margin-right: 10px; }
+    .pd-discount { background: rgba(105,240,174,0.15); color: #69F0AE; border-radius: var(--radius-full); padding: 3px 10px; font-size: 0.78rem; font-weight: 700; }
+    .pd-desc { color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
+    .pd-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .pd-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .pd-cta { display: flex; flex-direction: column; gap: 12px; }
+    /* Inquiry form */
+    .inq-form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; margin-top: 36px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group textarea {
+      background: #0d0b1e; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 10px 14px; color: var(--text-primary); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--teal); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .not-found { text-align: center; padding: 80px 20px; }
+    @media(max-width:860px){ .pd-layout { grid-template-columns: 1fr; } .pd-img-box { aspect-ratio: 16/9; position: static; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="ideas.html" class="nav-link">Business Ideas</a>
+      <a href="marketplace.html" class="nav-link">Marketplace</a>
+      <a href="stories.html" class="nav-link">Stories</a>
+      <a href="schemes.html" class="nav-link">Schemes</a>
+      <a href="about.html" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="sell.html" class="btn btn-primary btn-sm" id="nav-sell-btn">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a><a href="ideas.html">💡 Business Ideas</a><a href="marketplace.html">🛒 Marketplace</a><a href="stories.html">⭐ Stories</a>
+</div>
+
+<div class="container">
+  <div id="product-content">
+    <!-- Loading state -->
+    <div style="text-align:center; padding: calc(var(--nav-height)+80px) 0 80px">
+      <div style="font-size:2rem; margin-bottom:12px; opacity:0.5">🔍</div>
+      <p style="color:var(--text-muted)">Loading product...</p>
+    </div>
+  </div>
+</div>
+
+<a href="https://wa.me/919000000000" target="_blank" class="wa-float">💬</a>
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 Community Makers' Market</span><span><a href="marketplace.html" style="color:var(--gold)">← Back to Marketplace</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+
+// Nav
+const curSeller = Store.getCurrentSeller();
+if (curSeller) { const b = document.getElementById('nav-sell-btn'); if(b){ b.textContent='My Dashboard'; b.href='seller-dashboard.html'; } }
+
+const params = new URLSearchParams(window.location.search);
+const pid    = params.get('id');
+const src    = params.get('src') || 'seed';
+
+let product = null, sellerInfo = null;
+
+if (src === 'seed') {
+  const seedId = parseInt(pid);
+  product = (CMM_DATA.products || []).find(function(p){ return p.id === seedId; });
+  if (product) {
+    sellerInfo = { name: product.seller, phone: product.sellerPhone, location: product.location };
+  }
+} else {
+  product = Store.getProduct(pid);
+  if (product) {
+    sellerInfo = Store.getSeller(product.sellerId);
+  }
+}
+
+const content = document.getElementById('product-content');
+
+if (!product) {
+  content.innerHTML = '<div class="not-found" style="padding-top:calc(var(--nav-height)+60px)"><div style="font-size:3rem;margin-bottom:16px">😕</div><h2 style="margin-bottom:8px">Product Not Found</h2><p style="color:var(--text-secondary);margin-bottom:24px">This product may have been removed or the link is invalid.</p><a href="marketplace.html" class="btn btn-primary">← Back to Marketplace</a></div>';
+} else {
+
+  // Build product detail
+  const layout = document.createElement('div');
+  layout.className = 'pd-layout';
+
+  // Left: Image
+  const imgBox = document.createElement('div');
+  imgBox.className = 'pd-img-box';
+  if (product.image) {
+    const isSeed = src === 'seed';
+    const img = document.createElement('img');
+    img.src = isSeed ? CMM.imgPath(product.image) : product.image;
+    img.alt = product.name || '';
+    img.loading = 'lazy';
+    img.onerror = function() { img.style.display = 'none'; imgBox.textContent = product.emoji || '📦'; };
+    imgBox.appendChild(img);
+  } else {
+    imgBox.textContent = product.emoji || '📦';
+  }
+
+  // Right: Info
+  const infoDiv = document.createElement('div');
+  infoDiv.className = 'pd-info';
+
+  // Breadcrumb
+  const bc = document.createElement('div');
+  bc.className = 'breadcrumb';
+  bc.innerHTML = '<a href="../index.html">Home</a> <span>›</span> <a href="marketplace.html">Marketplace</a> <span>›</span> <span>' + (product.name || product.category || '') + '</span>';
+
+  // Category badge
+  const catBadge = document.createElement('div');
+  catBadge.style.marginBottom = '12px';
+  const badgeEl = document.createElement('span');
+  badgeEl.className = 'badge badge-teal';
+  badgeEl.textContent = product.category || '';
+  catBadge.appendChild(badgeEl);
+
+  // Title
+  const title = document.createElement('h1');
+  title.className = 'pd-title';
+  title.textContent = product.name || '';
+
+  // Seller
+  const sellerDiv = document.createElement('div');
+  sellerDiv.className = 'pd-seller';
+  const sName = sellerInfo ? (sellerInfo.fullName || sellerInfo.businessName || sellerInfo.name || 'Seller') : 'Seller';
+  const initials = sName.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+  const av = document.createElement('div');
+  av.className = 'pd-seller-avatar';
+  av.textContent = initials;
+  const sInfo = document.createElement('div');
+  const sNameEl = document.createElement('div');
+  sNameEl.style.cssText = 'font-weight:600; font-size:0.92rem';
+  sNameEl.textContent = sName;
+  const sLoc = document.createElement('div');
+  sLoc.style.cssText = 'font-size:0.78rem; color:var(--text-muted)';
+  sLoc.textContent = '📍 ' + (sellerInfo ? (sellerInfo.location || '') : (product.location || ''));
+  sInfo.appendChild(sNameEl);
+  sInfo.appendChild(sLoc);
+  sellerDiv.appendChild(av);
+  sellerDiv.appendChild(sInfo);
+
+  // Rating (seed products only)
+  let ratingDiv = null;
+  if (product.rating) {
+    ratingDiv = document.createElement('div');
+    ratingDiv.className = 'pd-rating';
+    const stars = document.createElement('span');
+    stars.style.cssText = 'color:var(--gold); font-size:0.9rem';
+    stars.textContent = '★'.repeat(Math.round(product.rating)) + '☆'.repeat(5 - Math.round(product.rating));
+    const rScore = document.createElement('span');
+    rScore.style.cssText = 'font-weight:700; color:var(--gold)';
+    rScore.textContent = product.rating;
+    const rCount = document.createElement('span');
+    rCount.style.cssText = 'color:var(--text-muted); font-size:0.82rem';
+    rCount.textContent = '(' + product.reviews + ' reviews)';
+    ratingDiv.appendChild(stars);
+    ratingDiv.appendChild(rScore);
+    ratingDiv.appendChild(rCount);
+  }
+
+  // Price
+  const priceDiv = document.createElement('div');
+  priceDiv.style.marginBottom = '16px';
+  const priceEl = document.createElement('div');
+  priceEl.className = 'pd-price';
+  const priceVal = product.price ? (typeof product.price === 'number' ? '₹' + product.price : product.price) : '—';
+  priceEl.textContent = priceVal;
+  priceDiv.appendChild(priceEl);
+  if (product.originalPrice) {
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.gap = '10px';
+    const orig = document.createElement('span');
+    orig.className = 'pd-orig';
+    orig.textContent = '₹' + product.originalPrice;
+    const disc = document.createElement('span');
+    disc.className = 'pd-discount';
+    const pct = Math.round((1 - product.price / product.originalPrice) * 100);
+    disc.textContent = pct + '% off';
+    row.appendChild(orig);
+    row.appendChild(disc);
+    priceDiv.appendChild(row);
+  }
+
+  // Description
+  const desc = document.createElement('p');
+  desc.className = 'pd-desc';
+  desc.textContent = product.desc || product.description || '';
+
+  // Tags
+  let tagsDiv = null;
+  if (product.tags && product.tags.length) {
+    tagsDiv = document.createElement('div');
+    tagsDiv.className = 'pd-tags';
+    product.tags.forEach(function(tag) {
+      const t = document.createElement('span');
+      t.className = 'badge badge-muted';
+      t.textContent = '#' + tag;
+      tagsDiv.appendChild(t);
+    });
+  }
+
+  // CTA
+  const ctaDiv = document.createElement('div');
+  ctaDiv.className = 'pd-cta';
+  const phone = sellerInfo ? (sellerInfo.sellerPhone || sellerInfo.phone || '') : (product.sellerPhone || '');
+  const waBtn = document.createElement('button');
+  waBtn.className = 'btn btn-whatsapp';
+  waBtn.style.cssText = 'width:100%; padding:14px; font-size:1rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px;';
+  waBtn.textContent = '💬 Contact Seller on WhatsApp';
+  waBtn.addEventListener('click', function() {
+    CMM.openWhatsApp(phone.replace(/\D/g,''), product.name || '', sName, priceVal);
+  });
+  const backBtn = document.createElement('a');
+  backBtn.href = 'marketplace.html';
+  backBtn.className = 'btn btn-ghost';
+  backBtn.style.cssText = 'text-align:center; display:block';
+  backBtn.textContent = '← Back to Marketplace';
+  ctaDiv.appendChild(waBtn);
+  ctaDiv.appendChild(backBtn);
+
+  // Assemble info
+  infoDiv.appendChild(bc);
+  infoDiv.appendChild(catBadge);
+  infoDiv.appendChild(title);
+  infoDiv.appendChild(sellerDiv);
+  if (ratingDiv) infoDiv.appendChild(ratingDiv);
+  infoDiv.appendChild(priceDiv);
+  infoDiv.appendChild(desc);
+  if (tagsDiv) infoDiv.appendChild(tagsDiv);
+  infoDiv.appendChild(ctaDiv);
+
+  layout.appendChild(imgBox);
+  layout.appendChild(infoDiv);
+  content.innerHTML = '';
+  content.appendChild(layout);
+
+  // Inquiry form
+  const inqCard = document.createElement('div');
+  inqCard.className = 'inq-form-card reveal';
+  const inqTitle = document.createElement('h2');
+  inqTitle.style.cssText = 'font-size:1.1rem; margin-bottom:18px';
+  inqTitle.textContent = '📩 Send a Message to the Seller';
+  inqCard.appendChild(inqTitle);
+
+  const form = document.createElement('form');
+  form.id = 'inq-form';
+  form.noValidate = true;
+
+  function makeField(labelText, type, id, placeholder) {
+    const g = document.createElement('div');
+    g.className = 'form-group';
+    const lbl = document.createElement('label');
+    lbl.textContent = labelText;
+    lbl.htmlFor = id;
+    const inp = type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
+    if (type !== 'textarea') inp.type = type;
+    inp.id = id;
+    inp.placeholder = placeholder;
+    g.appendChild(lbl);
+    g.appendChild(inp);
+    return g;
+  }
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:16px';
+  row.appendChild(makeField('Your Name *', 'text', 'inq-name', 'Your full name'));
+  row.appendChild(makeField('Email *', 'email', 'inq-email', 'you@example.com'));
+  const row2 = document.createElement('div');
+  row2.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:16px';
+  row2.appendChild(makeField('Phone (optional)', 'tel', 'inq-phone', '9876543210'));
+  const dummy = document.createElement('div');
+  row2.appendChild(dummy);
+
+  const msgField = makeField('Message *', 'textarea', 'inq-msg', 'Hi, I\'m interested in this product. Can you tell me more?');
+
+  const errMsg = document.createElement('p');
+  errMsg.style.cssText = 'color:#FF6B8A; font-size:0.82rem; margin-bottom:12px; display:none';
+  errMsg.id = 'inq-err';
+  errMsg.textContent = 'Please enter your name, email and message.';
+
+  const subBtn = document.createElement('button');
+  subBtn.type = 'submit';
+  subBtn.className = 'btn btn-primary';
+  subBtn.style.cssText = 'width:100%; padding:13px; font-size:0.95rem';
+  subBtn.textContent = 'Send Message 📨';
+
+  form.appendChild(row);
+  form.appendChild(row2);
+  form.appendChild(msgField);
+  form.appendChild(errMsg);
+  form.appendChild(subBtn);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const n = document.getElementById('inq-name').value.trim();
+    const em = document.getElementById('inq-email').value.trim();
+    const ph = document.getElementById('inq-phone').value.trim();
+    const mg = document.getElementById('inq-msg').value.trim();
+    const errEl = document.getElementById('inq-err');
+    if (!n || !em || !mg) { errEl.style.display = 'block'; return; }
+    errEl.style.display = 'none';
+
+    Store.addInquiry({
+      name: n, email: em, phone: ph, message: mg,
+      subject: product.name || '',
+      productId: product.id ? String(product.id) : '',
+      productName: product.name || '',
+      sellerId: sellerInfo ? (sellerInfo.id || '') : '',
+    });
+
+    form.innerHTML = '<div style="text-align:center;padding:24px"><div style="font-size:2.5rem;margin-bottom:12px">✅</div><p style="font-weight:600">Message sent!</p><p style="color:var(--text-secondary);font-size:0.88rem">The seller will get back to you soon.</p></div>';
+    CMM.showToast('Message sent to seller!', '✅');
+  });
+
+  inqCard.appendChild(form);
+  content.appendChild(inqCard);
+}
+
+document.title = (product ? product.name + ' — ' : '') + 'Community Makers\' Market';
+</script>
+</body>
+</html>

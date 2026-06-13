@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Dashboard — Community Makers' Market</title>
+  <meta name="description" content="Manage your seller profile, products, and customer inquiries." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .dash-layout { display: grid; grid-template-columns: 240px 1fr; gap: 28px; align-items: start; padding-top: calc(var(--nav-height) + 28px); padding-bottom: 60px; }
+    /* Sidebar */
+    .dash-sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; position: sticky; top: calc(var(--nav-height) + 12px); }
+    .seller-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--grad-gold); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #000; margin: 0 auto 12px; }
+    .seller-name { text-align: center; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .seller-cat  { text-align: center; font-size: 0.78rem; color: var(--teal); margin-bottom: 16px; }
+    .dash-nav { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); padding-top: 16px; }
+    .dash-nav-btn { background: none; border: none; padding: 10px 14px; border-radius: var(--radius-md); color: var(--text-secondary); font-size: 0.88rem; font-weight: 500; cursor: pointer; text-align: left; transition: var(--transition-fast); display: flex; align-items: center; gap: 10px; }
+    .dash-nav-btn:hover, .dash-nav-btn.active { background: rgba(0,191,165,0.1); color: var(--teal); }
+    .dash-nav-btn.logout { color: #FF6B8A; margin-top: 8px; }
+    .dash-nav-btn.logout:hover { background: rgba(255,107,138,0.1); }
+    /* Main content */
+    .dash-panel { display: none; }
+    .dash-panel.active { display: block; }
+    .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; }
+    .dash-section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    /* Form */
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group select, .form-group textarea {
+      background: #0d0b1e; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 10px 14px; color: var(--text-primary); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-group select option { background: #12102A; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    /* Product grid */
+    .products-grid-dash { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .prod-card-dash { background: var(--bg-secondary, #0d0b1e); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .prod-img-dash { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, rgba(249,168,37,0.06), rgba(0,191,165,0.06)); overflow: hidden; }
+    .prod-img-dash img { width: 100%; height: 100%; object-fit: cover; }
+    .prod-body-dash { padding: 12px; }
+    .prod-actions { display: flex; gap: 8px; margin-top: 10px; }
+    /* Inquiry table */
+    .inq-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .inq-table th { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+    .inq-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .inq-table tr:last-child td { border-bottom: none; }
+    /* Profile view */
+    .profile-field { display: flex; flex-direction: column; gap: 2px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .profile-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .profile-value { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; }
+    /* Modal overlay */
+    .prod-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000; place-items: center; padding: 20px; }
+    .prod-modal-overlay.open { display: grid; }
+    .prod-modal { background: #12102A; border: 1px solid var(--border-hover); border-radius: var(--radius-xl); padding: 32px; max-width: 500px; width: 100%; position: relative; animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes modalIn { from { transform: scale(0.85) translateY(20px); opacity:0; } to { transform: scale(1) translateY(0); opacity:1; } }
+    .prod-modal-close { position: absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); cursor:pointer; display:grid; place-items:center; }
+    /* Image upload */
+    .img-upload-area { border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 24px; text-align: center; cursor: pointer; transition: var(--transition-fast); }
+    .img-upload-area:hover { border-color: var(--gold); }
+    .img-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: var(--radius-md); margin-top: 10px; display: none; }
+    /* Empty states */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-secondary); }
+    .empty-state .ei { font-size: 3rem; margin-bottom: 12px; }
+    /* Responsive */
+    @media(max-width:900px) { .dash-layout { grid-template-columns: 1fr; } .dash-sidebar { position: static; } .products-grid-dash { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:500px) { .products-grid-dash { grid-template-columns: 1fr; } .form-row2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="ideas.html" class="nav-link">Business Ideas</a>
+      <a href="marketplace.html" class="nav-link">Marketplace</a>
+      <a href="stories.html" class="nav-link">Stories</a>
+      <a href="schemes.html" class="nav-link">Schemes</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="marketplace.html" class="btn btn-ghost btn-sm">View Marketplace</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="dash-layout">
+
+    <!-- Sidebar -->
+    <aside class="dash-sidebar">
+      <div class="seller-avatar" id="sidebar-avatar">?</div>
+      <div class="seller-name" id="sidebar-name">Loading...</div>
+      <div class="seller-cat" id="sidebar-cat"></div>
+      <nav class="dash-nav">
+        <button class="dash-nav-btn active" data-tab="profile">👤 My Profile</button>
+        <button class="dash-nav-btn" data-tab="products">📦 My Products</button>
+        <button class="dash-nav-btn" data-tab="inquiries">💬 Inquiries <span id="inq-badge" style="background:var(--gold);color:#000;border-radius:999px;padding:1px 7px;font-size:0.7rem;margin-left:4px;display:none"></span></button>
+        <button class="dash-nav-btn logout" id="logout-btn">🚪 Logout</button>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main>
+
+      <!-- TAB: Profile -->
+      <div class="dash-panel active" id="tab-profile">
+        <div class="dash-card">
+          <div class="dash-section-title">
+            <span>My Profile</span>
+            <button class="btn btn-ghost btn-sm" id="edit-profile-btn">✏️ Edit Profile</button>
+          </div>
+
+          <!-- View mode -->
+          <div id="profile-view">
+            <div class="profile-field"><span class="profile-label">Full Name</span><span class="profile-value" id="pv-name">—</span></div>
+            <div class="profile-field"><span class="profile-label">Business Name</span><span class="profile-value" id="pv-biz">—</span></div>
+            <div class="profile-field"><span class="profile-label">Category</span><span class="profile-value" id="pv-cat">—</span></div>
+            <div class="profile-field"><span class="profile-label">Email</span><span class="profile-value" id="pv-email">—</span></div>
+            <div class="profile-field"><span class="profile-label">Phone</span><span class="profile-value" id="pv-phone">—</span></div>
+            <div class="profile-field"><span class="profile-label">Location</span><span class="profile-value" id="pv-loc">—</span></div>
+            <div class="profile-field" style="border-bottom:none"><span class="profile-label">Description</span><span class="profile-value" id="pv-desc">—</span></div>
+          </div>
+
+          <!-- Edit mode -->
+          <div id="profile-edit" style="display:none">
+            <div class="form-row2">
+              <div class="form-group"><label>Full Name</label><input type="text" id="pe-name" /></div>
+              <div class="form-group"><label>Phone</label><input type="tel" id="pe-phone" /></div>
+            </div>
+            <div class="form-row2">
+              <div class="form-group"><label>Email</label><input type="email" id="pe-email" /></div>
+              <div class="form-group"><label>Location</label><input type="text" id="pe-loc" /></div>
+            </div>
+            <div class="form-row2">
+              <div class="form-group"><label>Business Name</label><input type="text" id="pe-biz" /></div>
+              <div class="form-group"><label>Category</label>
+                <select id="pe-cat">
+                  <option value="Handmade Crafts">🧶 Handmade Crafts</option>
+                  <option value="Homemade Food">🍲 Homemade Food</option>
+                  <option value="Jewelry">💍 Jewelry</option>
+                  <option value="Tailoring">🧵 Tailoring</option>
+                  <option value="Art & Paintings">🖼️ Art &amp; Paintings</option>
+                  <option value="Home Decor">🏠 Home Decor</option>
+                  <option value="Customized Gifts">🎁 Customized Gifts</option>
+                  <option value="Plants & Gardening">🌿 Plants &amp; Gardening</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label>Description</label><textarea id="pe-desc"></textarea></div>
+            <div style="display:flex; gap:10px">
+              <button class="btn btn-primary btn-sm" id="save-profile-btn">✅ Save Changes</button>
+              <button class="btn btn-ghost btn-sm" id="cancel-edit-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px">
+          <div class="dash-card" style="text-align:center; padding:20px">
+            <div style="font-size:1.8rem; font-weight:800; color:var(--gold)" id="stat-products">0</div>
+            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:4px">Products Listed</div>
+          </div>
+          <div class="dash-card" style="text-align:center; padding:20px">
+            <div style="font-size:1.8rem; font-weight:800; color:var(--teal)" id="stat-inquiries">0</div>
+            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:4px">Inquiries Received</div>
+          </div>
+          <div class="dash-card" style="text-align:center; padding:20px">
+            <div style="font-size:1.8rem; font-weight:800; color:#69F0AE" id="stat-days">0</div>
+            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:4px">Days Active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Products -->
+      <div class="dash-panel" id="tab-products">
+        <div class="dash-card">
+          <div class="dash-section-title">
+            <span>My Products</span>
+            <button class="btn btn-primary btn-sm" id="add-product-btn">+ Add Product</button>
+          </div>
+          <div class="products-grid-dash" id="products-grid-dash"></div>
+          <div class="empty-state" id="products-empty" style="display:none">
+            <div class="ei">📦</div>
+            <p style="font-weight:600; margin-bottom:6px">No products yet</p>
+            <p style="font-size:0.85rem">Add your first product to appear in the marketplace.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Inquiries -->
+      <div class="dash-panel" id="tab-inquiries">
+        <div class="dash-card">
+          <div class="dash-section-title"><span>Customer Inquiries</span></div>
+          <div id="inquiries-container">
+            <table class="inq-table" id="inq-table" style="display:none">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Product / Subject</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th>Reply</th>
+                </tr>
+              </thead>
+              <tbody id="inq-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="inquiries-empty" style="display:none">
+              <div class="ei">💬</div>
+              <p style="font-weight:600; margin-bottom:6px">No inquiries yet</p>
+              <p style="font-size:0.85rem">When buyers contact you about products, they'll appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Product Form Modal -->
+<div class="prod-modal-overlay" id="product-modal">
+  <div class="prod-modal">
+    <button class="prod-modal-close" id="close-prod-modal">✕</button>
+    <h2 style="font-size:1.2rem; margin-bottom:20px" id="prod-modal-title">Add Product</h2>
+    <form id="product-form" novalidate>
+      <input type="hidden" id="pf-id" />
+      <div class="form-group"><label>Product Name *</label><input type="text" id="pf-name" placeholder="e.g. Handmade Pickle Jar" /></div>
+      <div class="form-row2">
+        <div class="form-group">
+          <label>Category *</label>
+          <select id="pf-cat">
+            <option value="">— Select —</option>
+            <option value="Handmade Crafts">🧶 Handmade Crafts</option>
+            <option value="Homemade Food">🍲 Homemade Food</option>
+            <option value="Jewelry">💍 Jewelry</option>
+            <option value="Tailoring">🧵 Tailoring</option>
+            <option value="Art & Paintings">🖼️ Art &amp; Paintings</option>
+            <option value="Home Decor">🏠 Home Decor</option>
+            <option value="Customized Gifts">🎁 Customized Gifts</option>
+            <option value="Plants & Gardening">🌿 Plants &amp; Gardening</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Price *</label><input type="text" id="pf-price" placeholder="e.g. ₹250" /></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="pf-desc" placeholder="Describe your product..."></textarea></div>
+      <div class="form-group">
+        <label>Product Image (optional)</label>
+        <div class="img-upload-area" id="img-upload-area">
+          <div style="font-size:2rem; margin-bottom:6px">📷</div>
+          <div style="font-size:0.85rem; color:var(--text-secondary)">Click to upload image</div>
+          <input type="file" id="pf-image" accept="image/*" style="display:none" />
+        </div>
+        <img id="img-preview" class="img-preview" alt="Preview" />
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:4px" id="save-product-btn">Save Product</button>
+    </form>
+  </div>
+</div>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+
+// ── Auth guard ───────────────────────────────
+let currentSeller = Store.getCurrentSeller();
+if (!currentSeller) {
+  window.location.href = 'sell.html';
+}
+
+// ── Tab navigation ───────────────────────────
+document.querySelectorAll('.dash-nav-btn[data-tab]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.dash-nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.dash-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'products') renderProducts();
+    if (btn.dataset.tab === 'inquiries') renderInquiries();
+  });
+});
+
+// ── Logout ───────────────────────────────────
+document.getElementById('logout-btn').addEventListener('click', function() {
+  Store.clearCurrentSeller();
+  window.location.href = 'sell.html';
+});
+
+// ── Populate sidebar + profile ────────────────
+function initSeller() {
+  currentSeller = Store.getCurrentSeller();
+  if (!currentSeller) return;
+  // Sidebar
+  const initials = (currentSeller.fullName || 'S').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+  document.getElementById('sidebar-avatar').textContent = initials;
+  document.getElementById('sidebar-name').textContent = currentSeller.businessName || currentSeller.fullName;
+  document.getElementById('sidebar-cat').textContent = currentSeller.category || '';
+  // Profile view
+  document.getElementById('pv-name').textContent  = currentSeller.fullName || '—';
+  document.getElementById('pv-biz').textContent   = currentSeller.businessName || '—';
+  document.getElementById('pv-cat').textContent   = currentSeller.category || '—';
+  document.getElementById('pv-email').textContent = currentSeller.email || '—';
+  document.getElementById('pv-phone').textContent = currentSeller.phone || '—';
+  document.getElementById('pv-loc').textContent   = currentSeller.location || '—';
+  document.getElementById('pv-desc').textContent  = currentSeller.description || '—';
+  // Stats
+  const prods = Store.getSellerProducts(currentSeller.id);
+  const inqs  = Store.getSellerInquiries(currentSeller.id);
+  document.getElementById('stat-products').textContent   = prods.length;
+  document.getElementById('stat-inquiries').textContent  = inqs.length;
+  const days = currentSeller.createdAt ? Math.floor((Date.now() - new Date(currentSeller.createdAt)) / 86400000) : 0;
+  document.getElementById('stat-days').textContent = days;
+  // Inquiry badge
+  if (inqs.length > 0) {
+    const badge = document.getElementById('inq-badge');
+    badge.textContent = inqs.length;
+    badge.style.display = 'inline';
+  }
+}
+initSeller();
+
+// ── Profile Edit ─────────────────────────────
+document.getElementById('edit-profile-btn').addEventListener('click', function() {
+  document.getElementById('profile-view').style.display = 'none';
+  document.getElementById('profile-edit').style.display = 'block';
+  document.getElementById('pe-name').value  = currentSeller.fullName || '';
+  document.getElementById('pe-phone').value = currentSeller.phone || '';
+  document.getElementById('pe-email').value = currentSeller.email || '';
+  document.getElementById('pe-loc').value   = currentSeller.location || '';
+  document.getElementById('pe-biz').value   = currentSeller.businessName || '';
+  document.getElementById('pe-cat').value   = currentSeller.category || '';
+  document.getElementById('pe-desc').value  = currentSeller.description || '';
+});
+document.getElementById('cancel-edit-btn').addEventListener('click', function() {
+  document.getElementById('profile-view').style.display = 'block';
+  document.getElementById('profile-edit').style.display = 'none';
+});
+document.getElementById('save-profile-btn').addEventListener('click', function() {
+  const updated = Store.updateSeller(currentSeller.id, {
+    fullName: document.getElementById('pe-name').value.trim(),
+    phone: document.getElementById('pe-phone').value.trim(),
+    email: document.getElementById('pe-email').value.trim(),
+    location: document.getElementById('pe-loc').value.trim(),
+    businessName: document.getElementById('pe-biz').value.trim(),
+    category: document.getElementById('pe-cat').value,
+    description: document.getElementById('pe-desc').value.trim(),
+  });
+  Store.setCurrentSeller(updated);
+  document.getElementById('profile-view').style.display = 'block';
+  document.getElementById('profile-edit').style.display = 'none';
+  initSeller();
+  CMM.showToast('Profile updated!', '✅');
+});
+
+// ── Products ─────────────────────────────────
+function renderProducts() {
+  const grid  = document.getElementById('products-grid-dash');
+  const empty = document.getElementById('products-empty');
+  const prods = Store.getSellerProducts(currentSeller.id);
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  if (!prods.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  prods.forEach(function(p) {
+    const card = document.createElement('div');
+    card.className = 'prod-card-dash';
+
+    const imgDiv = document.createElement('div');
+    imgDiv.className = 'prod-img-dash';
+    if (p.image) {
+      const img = document.createElement('img');
+      img.src = p.image;
+      img.alt = p.name;
+      imgDiv.appendChild(img);
+    } else {
+      const catIcons = {'Handmade Crafts':'🧶','Homemade Food':'🍲','Jewelry':'💍','Tailoring':'🧵','Art & Paintings':'🖼️','Home Decor':'🏠','Customized Gifts':'🎁','Plants & Gardening':'🌿'};
+      imgDiv.textContent = catIcons[p.category] || '📦';
+    }
+
+    const body = document.createElement('div');
+    body.className = 'prod-body-dash';
+    const nameEl = document.createElement('div');
+    nameEl.style.cssText = 'font-weight:700; font-size:0.9rem; margin-bottom:4px';
+    nameEl.textContent = p.name;
+    const priceEl = document.createElement('div');
+    priceEl.style.cssText = 'color:var(--gold); font-weight:700; font-size:0.95rem; margin-bottom:4px';
+    priceEl.textContent = p.price;
+    const catEl = document.createElement('div');
+    catEl.style.cssText = 'font-size:0.75rem; color:var(--text-muted); margin-bottom:8px';
+    catEl.textContent = p.category;
+
+    const actions = document.createElement('div');
+    actions.className = 'prod-actions';
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn btn-ghost btn-sm';
+    editBtn.style.flex = '1';
+    editBtn.textContent = '✏️ Edit';
+    editBtn.addEventListener('click', function() { openProductModal(p); });
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-sm';
+    delBtn.style.cssText = 'flex:1; background:rgba(255,107,138,0.12); color:#FF6B8A; border:1px solid rgba(255,107,138,0.3); border-radius:var(--radius-full); padding:8px; font-size:0.82rem; font-weight:600;';
+    delBtn.textContent = '🗑️ Delete';
+    delBtn.addEventListener('click', function() {
+      if (confirm('Delete "' + p.name + '"?')) {
+        Store.deleteProduct(p.id);
+        renderProducts();
+        initSeller();
+        CMM.showToast('Product deleted', '🗑️');
+      }
+    });
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+
+    body.appendChild(nameEl);
+    body.appendChild(priceEl);
+    body.appendChild(catEl);
+    body.appendChild(actions);
+    card.appendChild(imgDiv);
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+// ── Product Modal ─────────────────────────────
+function openProductModal(prod) {
+  document.getElementById('prod-modal-title').textContent = prod ? 'Edit Product' : 'Add Product';
+  document.getElementById('pf-id').value    = prod ? prod.id : '';
+  document.getElementById('pf-name').value  = prod ? prod.name : '';
+  document.getElementById('pf-cat').value   = prod ? prod.category : '';
+  document.getElementById('pf-price').value = prod ? prod.price : '';
+  document.getElementById('pf-desc').value  = prod ? (prod.description || '') : '';
+  const preview = document.getElementById('img-preview');
+  if (prod && prod.image) { preview.src = prod.image; preview.style.display = 'block'; }
+  else { preview.style.display = 'none'; preview.src = ''; }
+  document.getElementById('product-modal').classList.add('open');
+}
+document.getElementById('add-product-btn').addEventListener('click', function() { openProductModal(null); });
+document.getElementById('close-prod-modal').addEventListener('click', function() { document.getElementById('product-modal').classList.remove('open'); });
+
+// Image upload → Base64
+document.getElementById('img-upload-area').addEventListener('click', function() { document.getElementById('pf-image').click(); });
+document.getElementById('pf-image').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const preview = document.getElementById('img-preview');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+});
+
+// Product form submit
+document.getElementById('product-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name  = document.getElementById('pf-name').value.trim();
+  const cat   = document.getElementById('pf-cat').value;
+  const price = document.getElementById('pf-price').value.trim();
+  const desc  = document.getElementById('pf-desc').value.trim();
+  const imgEl = document.getElementById('img-preview');
+  const image = imgEl.style.display !== 'none' ? imgEl.src : '';
+  const editId = document.getElementById('pf-id').value;
+
+  if (!name || !cat || !price) {
+    CMM.showToast('Please fill in name, category, and price', '⚠️');
+    return;
+  }
+
+  const data = { sellerId: currentSeller.id, name: name, category: cat, price: price, description: desc, image: image };
+  if (editId) { Store.updateProduct(editId, data); CMM.showToast('Product updated!', '✅'); }
+  else { Store.addProduct(data); CMM.showToast('Product added! It now appears in the marketplace.', '🎉'); }
+
+  document.getElementById('product-modal').classList.remove('open');
+  document.getElementById('product-form').reset();
+  document.getElementById('img-preview').style.display = 'none';
+  renderProducts();
+  initSeller();
+});
+
+// ── Inquiries ─────────────────────────────────
+function renderInquiries() {
+  const inqs  = Store.getSellerInquiries(currentSeller.id);
+  const table = document.getElementById('inq-table');
+  const empty = document.getElementById('inquiries-empty');
+  const tbody = document.getElementById('inq-tbody');
+  while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+  if (!inqs.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  table.style.display = 'table';
+
+  inqs.slice().reverse().forEach(function(inq) {
+    const tr = document.createElement('tr');
+    const date = inq.createdAt ? new Date(inq.createdAt).toLocaleDateString('en-IN') : '—';
+    const tdName = document.createElement('td');
+    tdName.innerHTML = '<strong>' + (inq.name||'—') + '</strong><br><span style="color:var(--text-muted);font-size:0.78rem">' + (inq.email||'') + '</span>';
+    const tdProd = document.createElement('td');
+    tdProd.style.color = 'var(--teal)';
+    tdProd.textContent = inq.productName || inq.subject || '—';
+    const tdMsg = document.createElement('td');
+    tdMsg.style.cssText = 'max-width:220px; color:var(--text-secondary); font-size:0.85rem';
+    tdMsg.textContent = inq.message || '—';
+    const tdDate = document.createElement('td');
+    tdDate.style.cssText = 'white-space:nowrap; color:var(--text-muted); font-size:0.8rem';
+    tdDate.textContent = date;
+    const tdReply = document.createElement('td');
+    if (inq.phone) {
+      const wa = document.createElement('a');
+      wa.href = 'https://wa.me/' + inq.phone.replace(/\D/g,'');
+      wa.target = '_blank';
+      wa.className = 'btn btn-whatsapp btn-sm';
+      wa.textContent = '💬';
+      wa.style.cssText = 'padding:6px 10px; font-size:0.8rem';
+      tdReply.appendChild(wa);
+    } else { tdReply.textContent = '—'; }
+    tr.appendChild(tdName); tr.appendChild(tdProd); tr.appendChild(tdMsg); tr.appendChild(tdDate); tr.appendChild(tdReply);
+    tbody.appendChild(tr);
+  });
+}
+
+// Initial render
+renderProducts();
+</script>
+</body>
+</html>

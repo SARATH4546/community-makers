@@ -53,7 +53,7 @@
     </div>
     <div class="nav-actions">
       <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
-      <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="nav.cta">Start Selling</a>
+      <a href="sell.html" class="btn btn-primary btn-sm" id="nav-sell-btn" data-i18n="nav.cta">Start Selling</a>
     </div>
     <button class="hamburger"><span></span><span></span><span></span></button>
   </div>
@@ -169,6 +169,7 @@
 
 <script src="../js/translations.js"></script>
 <script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
 <script src="../js/main.js"></script>
 <script>
 'use strict';
@@ -576,9 +577,49 @@ document.getElementById('loc-filters').addEventListener('click', function(e) {
 });
 
 document.getElementById('list-product-btn').addEventListener('click', function() {
-  CMM.openSellerModal();
+  window.location.href = 'sell.html';
 });
 
+// ── Conditional nav button ──
+var _cs = Store.getCurrentSeller();
+if (_cs) {
+  var _nb = document.getElementById('nav-sell-btn');
+  if (_nb) { _nb.textContent = 'My Dashboard'; _nb.href = 'seller-dashboard.html'; }
+}
+
+// ── Merge seller products with seed products ──
+var _origRender = renderProducts;
+renderProducts = function() {
+  var sellerProds = Store.getAllProducts();
+  // Convert seller products to a compatible shape
+  var converted = sellerProds.map(function(sp) {
+    var seller = Store.getSeller(sp.sellerId);
+    return {
+      _isSeller: true,
+      id: sp.id,
+      name: sp.name,
+      seller: seller ? (seller.businessName || seller.fullName) : 'Local Seller',
+      sellerPhone: seller ? seller.phone : '',
+      price: parseFloat((sp.price || '0').replace(/[^0-9.]/g, '')) || 0,
+      originalPrice: null,
+      category: (sp.category || '').toLowerCase().replace(/ & /g,'-').replace(/ /g,'-'),
+      rating: null,
+      reviews: 0,
+      image: sp.image || '',
+      emoji: '📦',
+      tags: [],
+      desc: sp.description || '',
+      location: seller ? seller.location : '',
+    };
+  });
+  // Temporarily extend CMM_DATA.products
+  var orig = CMM_DATA.products;
+  CMM_DATA.products = converted.concat(orig);
+  _origRender();
+  CMM_DATA.products = orig;
+};
+
+// ── Override product card to add View Details button ──
 window.CMM_RERENDER = function() { renderProducts(); };
 
 // Run on load

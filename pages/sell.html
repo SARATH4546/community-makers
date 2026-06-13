@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Selling — Community Makers' Market</title>
+  <meta name="description" content="Register as a seller on Community Makers' Market. Reach local buyers and grow your home business." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-hero { padding: calc(var(--nav-height) + 60px) 0 48px; background: linear-gradient(180deg, rgba(249,168,37,0.08) 0%, transparent 100%); text-align: center; }
+    /* Journey Steps */
+    .journey-wrap { overflow-x: auto; padding-bottom: 8px; }
+    .journey { display: flex; align-items: flex-start; justify-content: center; gap: 0; min-width: 600px; margin: 0 auto; max-width: 860px; }
+    .journey-step { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; position: relative; }
+    .journey-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; left: 60%; width: 80%; height: 2px; background: linear-gradient(90deg, var(--gold), var(--teal)); opacity: 0.4; }
+    .step-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: var(--transition); z-index: 1; }
+    .journey-step.done .step-icon { background: rgba(249,168,37,0.15); border-color: var(--gold); box-shadow: 0 0 20px rgba(249,168,37,0.3); }
+    .step-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-align: center; max-width: 72px; }
+    .journey-step.done .step-label { color: var(--gold); }
+    /* Form */
+    .sell-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px; max-width: 640px; margin: 0 auto 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group select, .form-group textarea {
+      background: var(--bg-secondary, #0d0b1e); border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 12px 16px; color: var(--text-primary); font-size: 0.95rem; font-family: inherit; outline: none;
+      transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-group input.error, .form-group select.error, .form-group textarea.error { border-color: #FF6B8A; }
+    .form-group select option { background: #12102A; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .field-error { font-size: 0.78rem; color: #FF6B8A; margin-top: 2px; display: none; }
+    .field-error.visible { display: block; }
+    .submit-btn { width: 100%; padding: 16px; font-size: 1rem; font-weight: 700; background: var(--grad-gold); color: #000; border: none; border-radius: var(--radius-full); cursor: pointer; transition: var(--transition); font-family: var(--font-heading); display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(249,168,37,0.5); }
+    .success-box { display: none; text-align: center; padding: 32px; }
+    .success-box .check { font-size: 3rem; margin-bottom: 16px; }
+    @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } .sell-card { padding: 24px 16px; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">🛍️</div><div><span class="nav-logo-text">Community Makers'</span><span class="nav-logo-sub">Market</span></div></a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="ideas.html" class="nav-link" data-i18n="nav.ideas">Business Ideas</a>
+      <a href="learn.html" class="nav-link" data-i18n="nav.learn">Learn</a>
+      <a href="marketplace.html" class="nav-link" data-i18n="nav.market">Marketplace</a>
+      <a href="stories.html" class="nav-link" data-i18n="nav.stories">Stories</a>
+      <a href="schemes.html" class="nav-link" data-i18n="nav.schemes">Schemes</a>
+      <a href="community.html" class="nav-link" data-i18n="nav.community">Community</a>
+    </div>
+    <div class="nav-actions">
+      <button class="lang-toggle">🌐 <span class="lang-text">తెలుగు</span></button>
+      <a href="sell.html" class="btn btn-primary btn-sm" id="nav-sell-btn">Start Selling</a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="../index.html">🏠 Home</a>
+  <a href="ideas.html">💡 Business Ideas</a>
+  <a href="learn.html">📚 Learn</a>
+  <a href="marketplace.html">🛒 Marketplace</a>
+  <a href="stories.html">⭐ Stories</a>
+  <a href="schemes.html">🏛️ Schemes</a>
+  <a href="community.html">👥 Community</a>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Seller Registration</div>
+    <h1 class="section-title">Start Selling on <span class="text-gradient-gold">CMM</span></h1>
+    <p class="section-desc">Join 1,500+ makers earning from home. Free to register. Connect directly with buyers via WhatsApp.</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+
+    <!-- 7-Step Journey -->
+    <div style="margin-bottom:48px">
+      <div style="text-align:center; margin-bottom:28px">
+        <div class="section-eyebrow">Your Journey</div>
+        <h2 style="font-size:1.3rem; font-weight:700">7 Steps to Build Your Business</h2>
+      </div>
+      <div class="journey-wrap">
+        <div class="journey" id="journey-steps">
+          <div class="journey-step done"><div class="step-icon">💡</div><div class="step-label">Discover Skill</div></div>
+          <div class="journey-step done"><div class="step-icon">📚</div><div class="step-label">Learn</div></div>
+          <div class="journey-step done"><div class="step-icon">📋</div><div class="step-label">Plan</div></div>
+          <div class="journey-step done"><div class="step-icon">🛒</div><div class="step-label">Setup</div></div>
+          <div class="journey-step"><div class="step-icon">✨</div><div class="step-label">Create</div></div>
+          <div class="journey-step"><div class="step-icon">📢</div><div class="step-label">Market</div></div>
+          <div class="journey-step"><div class="step-icon">💰</div><div class="step-label">Earn</div></div>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--text-muted); font-size:0.82rem; margin-top:12px">You're on Step 4 — Set up your seller profile to start listing products!</p>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="sell-card" id="form-card">
+      <div style="margin-bottom:28px">
+        <h2 style="font-size:1.4rem; margin-bottom:6px">Create Your Seller Profile</h2>
+        <p style="color:var(--text-secondary); font-size:0.88rem">All fields marked * are required. Your profile will appear in the marketplace.</p>
+      </div>
+
+      <form id="seller-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sf-name">Full Name *</label>
+            <input type="text" id="sf-name" placeholder="e.g. Priya Sharma" autocomplete="name" />
+            <span class="field-error" id="err-name">Please enter your full name</span>
+          </div>
+          <div class="form-group">
+            <label for="sf-phone">Phone Number *</label>
+            <input type="tel" id="sf-phone" placeholder="e.g. 9876543210" autocomplete="tel" />
+            <span class="field-error" id="err-phone">Enter a valid 10-digit phone number</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sf-email">Email Address *</label>
+            <input type="email" id="sf-email" placeholder="yourname@example.com" autocomplete="email" />
+            <span class="field-error" id="err-email">Please enter a valid email address</span>
+          </div>
+          <div class="form-group">
+            <label for="sf-location">City / Location *</label>
+            <input type="text" id="sf-location" placeholder="e.g. Hyderabad" />
+            <span class="field-error" id="err-location">Please enter your city</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sf-biz">Business Name *</label>
+            <input type="text" id="sf-biz" placeholder="e.g. Priya's Pickle House" />
+            <span class="field-error" id="err-biz">Please enter your business name</span>
+          </div>
+          <div class="form-group">
+            <label for="sf-cat">Business Category *</label>
+            <select id="sf-cat">
+              <option value="">— Select Category —</option>
+              <option value="Handmade Crafts">🧶 Handmade Crafts</option>
+              <option value="Homemade Food">🍲 Homemade Food</option>
+              <option value="Jewelry">💍 Jewelry</option>
+              <option value="Tailoring">🧵 Tailoring</option>
+              <option value="Art & Paintings">🖼️ Art &amp; Paintings</option>
+              <option value="Home Decor">🏠 Home Decor</option>
+              <option value="Customized Gifts">🎁 Customized Gifts</option>
+              <option value="Plants & Gardening">🌿 Plants &amp; Gardening</option>
+            </select>
+            <span class="field-error" id="err-cat">Please select a category</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="sf-desc">Short Business Description *</label>
+          <textarea id="sf-desc" placeholder="Describe what you make and sell, your unique style, and what makes your products special... (min 20 characters)"></textarea>
+          <span class="field-error" id="err-desc">Please write at least 20 characters</span>
+        </div>
+        <button type="submit" class="submit-btn">
+          <span>Join as Seller</span> <span>→</span>
+        </button>
+      </form>
+
+      <!-- Success State -->
+      <div class="success-box" id="success-box">
+        <div class="check">🎉</div>
+        <h2 style="font-size:1.4rem; margin-bottom:8px">Welcome to CMM!</h2>
+        <p style="color:var(--text-secondary); margin-bottom:20px">Your seller profile has been created successfully. Taking you to your dashboard...</p>
+        <div style="width:48px; height:48px; border:3px solid var(--gold); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 Community Makers' Market</span><span><a href="../index.html" style="color:var(--gold)">← Back to Home</a></span></div></div></footer>
+
+<script src="../js/translations.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/store.js"></script>
+<script src="../js/main.js"></script>
+<script>
+'use strict';
+
+// If already logged in, go straight to dashboard
+if (Store.getCurrentSeller()) {
+  window.location.href = 'seller-dashboard.html';
+}
+
+// Update nav button
+const navSellBtn = document.getElementById('nav-sell-btn');
+if (navSellBtn) {
+  navSellBtn.textContent = 'My Dashboard';
+  navSellBtn.href = 'seller-dashboard.html';
+}
+
+// Form validation helpers
+function showErr(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('visible', show);
+}
+function setError(inputId, errId, hasError) {
+  const inp = document.getElementById(inputId);
+  if (inp) inp.classList.toggle('error', hasError);
+  showErr(errId, hasError);
+}
+
+document.getElementById('seller-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name     = document.getElementById('sf-name').value.trim();
+  const phone    = document.getElementById('sf-phone').value.trim();
+  const email    = document.getElementById('sf-email').value.trim();
+  const location = document.getElementById('sf-location').value.trim();
+  const biz      = document.getElementById('sf-biz').value.trim();
+  const cat      = document.getElementById('sf-cat').value;
+  const desc     = document.getElementById('sf-desc').value.trim();
+
+  let valid = true;
+  setError('sf-name',     'err-name',     !name);
+  setError('sf-phone',    'err-phone',    !/^\d{10}$/.test(phone.replace(/\s/g,'')));
+  setError('sf-email',    'err-email',    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  setError('sf-location', 'err-location', !location);
+  setError('sf-biz',      'err-biz',      !biz);
+  setError('sf-cat',      'err-cat',      !cat);
+  setError('sf-desc',     'err-desc',     desc.length < 20);
+
+  if (!name || !/^\d{10}$/.test(phone.replace(/\s/g,'')) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !location || !biz || !cat || desc.length < 20) {
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Save seller
+  const seller = Store.addSeller({ fullName: name, phone: phone, email: email, location: location, businessName: biz, category: cat, description: desc });
+  Store.setCurrentSeller(seller);
+
+  // Show success
+  document.getElementById('seller-form').style.display = 'none';
+  document.getElementById('success-box').style.display = 'block';
+
+  setTimeout(function() {
+    window.location.href = 'seller-dashboard.html';
+  }, 1800);
+});
+
+// Clear field errors on input
+['sf-name','sf-phone','sf-email','sf-location','sf-biz','sf-cat','sf-desc'].forEach(function(id) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() { el.classList.remove('error'); });
+});
+</script>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+</body>
+</html>
